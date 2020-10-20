@@ -56,7 +56,7 @@ class METEOSATDataset(Dataset):
 
 # Training parameters 
 num_epochs = 200
-batch_size = 64
+batch_size = 32
 learning_rate = 1e-3
 train_img = '../SatellitePredictionGAN/data/METEOSAT/train'
 start_epoch = 0
@@ -65,7 +65,7 @@ end_epoch = 150
 # Data loader 
 data_loader = torch.utils.data.DataLoader(dataset=METEOSATDataset(train_img),
                                             batch_size=batch_size,
-                                            shuffle=True, num_workers=0)
+                                            shuffle=True, num_workers=1)
 
 # Model architecture 
 
