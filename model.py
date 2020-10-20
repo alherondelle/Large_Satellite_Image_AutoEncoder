@@ -8,6 +8,7 @@ import torchvision.transforms as transforms
 import torch
 import random
 import pickle
+from tqdm import tqdm
 from torch.utils.data import Dataset
 from PIL import Image
 import numpy as np 
@@ -75,7 +76,7 @@ end_epoch = 150
 # Data loader 
 data_loader = torch.utils.data.DataLoader(dataset=METEOSATDataset(train_img),
                                             batch_size=batch_size,
-                                            shuffle=False, num_workers=0)
+                                            shuffle=False, num_workers=1)
 
 # Model architecture 
 
@@ -132,7 +133,7 @@ data_iter = iter(data_loader)
 
 for epoch in range(start_epoch, end_epoch):
     t0 = time()
-    for i, img in enumerate(data_loader):
+    for i, img in tqdm(enumerate(data_loader)):
       img_ = Variable(img[:,:,:1420, :604]).cuda()
         # ===================forward=====================
       output = ae(img_.float())
