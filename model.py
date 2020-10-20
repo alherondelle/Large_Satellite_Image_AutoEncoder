@@ -41,7 +41,7 @@ class METEOSATDataset(Dataset):
     def __getitem__(self, idx):
         img_name = os.path.join(self.path,self.data[idx])
         image = np.load(img_name)
-        if np.nan(image).any() == True :
+        if np.isnan(image).any() == True :
             print(img_name)
         for c in range (2):
             if image[c].all() == image[c,0,0]:
@@ -52,7 +52,7 @@ class METEOSATDataset(Dataset):
           idx += 1
           img_name = os.path.join(self.path,self.data[idx])
           image = np.load(img_name)
-          if np.nan(image).any() == True :
+          if np.isnan(image).any() == True :
             print(img_name)
           for c in range (2):
             if image[c].all() == image[c,0,0]:
