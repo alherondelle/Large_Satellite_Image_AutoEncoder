@@ -57,7 +57,7 @@ class METEOSATDataset(Dataset):
 
 # Training parameters 
 num_epochs = 200
-batch_size = 32
+batch_size = 64
 learning_rate = 1e-3
 train_img = '../SatellitePredictionGAN/data/METEOSAT/train'
 start_epoch = 0
