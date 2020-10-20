@@ -43,7 +43,7 @@ class METEOSATDataset(Dataset):
 
     def __getitem__(self, index):
         video_seq = self.data[index]
-        idx2 = int(np.round((len(video_seq)-1)*random.random()))
+        idx2 = int(np.trunc((len(video_seq)-1)*random.random()))
         image_1 = np.load(os.path.join(self.path,video_seq[idx2]))
         image_1 = torch.from_numpy(image_1.astype(np.float64))
         image_2 = np.load(os.path.join(self.path,video_seq[idx2+1]))
