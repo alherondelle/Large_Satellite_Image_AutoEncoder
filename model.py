@@ -57,7 +57,7 @@ class METEOSATDataset(Dataset):
 
 # Training parameters 
 num_epochs = 200
-batch_size = 4
+batch_size = 16
 learning_rate = 1e-3
 train_img = '../SatellitePredictionGAN/data/METEOSAT/train'
 start_epoch = 0
@@ -66,7 +66,7 @@ end_epoch = 150
 # Data loader 
 data_loader = torch.utils.data.DataLoader(dataset=METEOSATDataset(train_img),
                                             batch_size=batch_size,
-                                            shuffle=False, num_workers=0)
+                                            shuffle=False, num_workers=2)
 
 # Model architecture 
 
@@ -140,14 +140,14 @@ for epoch in range(start_epoch, end_epoch):
     print('epoch [{}/{}], loss:{:.4f}, time:{:.4f}'
           .format(epoch+1, end_epoch, loss.item()*100, time() - t0))
     if epoch % 10 == 0:
-        torch.save(model.state_dict(), './conv_autoencoder_{}.pth'.format(epoch))
+        torch.save(ae.state_dict(), './conv_autoencoder_{}.pth'.format(epoch))
         pic = output[0].cpu()
         real_pic = img_[0].cpu()
         save_image(pic, './image_{}.png'.format(epoch))
         save_image(real_pic, './image_real_{}.png'.format(epoch))
 
 # Saving trained model : Final
-torch.save(model.state_dict(), './conv_autoencoder_{}.pth'.format(epoch))
+torch.save(ae.state_dict(), './conv_autoencoder_{}.pth'.format(epoch))
 
 # Stopping train phase 
 #ae.eval()
