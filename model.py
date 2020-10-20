@@ -35,9 +35,6 @@ class METEOSATDataset(Dataset):
           self.data.append(list_img)
         self.path = path_
         self.len_seq = len(self.data[0])
-        #self.path_init = self.data[0][:6]
-        #self.previous_image = np.load(os.path.join(self.path,self.data[0])).astype(np.float64)
-
 
     def __len__(self):
       len_ = 0
@@ -49,9 +46,9 @@ class METEOSATDataset(Dataset):
         idx_1 = index // (self.len_seq - 1)
         idx_2 = index % (self.len_seq - 1)
         video_seq = self.data[idx_1]
-        image_1 = np.load(os.path.join(self.path,video_seq[idx2]))
+        image_1 = np.load(os.path.join(self.path,video_seq[idx_2]))
         image_1 = torch.from_numpy(image_1.astype(np.float64))
-        image_2 = np.load(os.path.join(self.path,video_seq[idx2+1]))
+        image_2 = np.load(os.path.join(self.path,video_seq[idx_2+1]))
         image_2 = torch.from_numpy(image_2.astype(np.float64))
         img = (image_2 - image_1 + 2)/4
         return img
