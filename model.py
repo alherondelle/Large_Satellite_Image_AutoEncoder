@@ -120,7 +120,7 @@ data_iter = iter(data_loader)
 
 # Training
 
-folder = 'data/METEOSAT/train'
+folder = '../SatellitePredictionGAN/data/METEOSAT/train'
 for epoch in range(start_epoch, end_epoch):
     t0 = time()
     for i, img in enumerate(data_loader):
