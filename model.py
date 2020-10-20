@@ -58,7 +58,7 @@ class METEOSATDataset(Dataset):
 num_epochs = 200
 batch_size = 16
 learning_rate = 1e-3
-train_img = 'data/METEOSAT/train'
+train_img = '../SatellitePredictionGAN/data/METEOSAT/train'
 start_epoch = 0
 end_epoch = 150
 
