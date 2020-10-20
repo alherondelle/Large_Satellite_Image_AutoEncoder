@@ -65,7 +65,7 @@ end_epoch = 150
 # Data loader 
 data_loader = torch.utils.data.DataLoader(dataset=METEOSATDataset(train_img),
                                             batch_size=batch_size,
-                                            shuffle=True, num_workers=1)
+                                            shuffle=True, num_workers=1=)
 
 # Model architecture 
 
@@ -106,7 +106,7 @@ class Autoencoder(nn.Module):
 
 
 # Model initialization and weights loading
-
+multiprocessing.set_start_method('spawn')
 ae = Autoencoder().cuda()
 if start_epoch != 0:
   ae.load_state_dict(torch.load("AE_%d.pth" %  start_epoch))
