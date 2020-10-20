@@ -67,7 +67,7 @@ end_epoch = 150
 multiprocessing.set_start_method('spawn')
 data_loader = torch.utils.data.DataLoader(dataset=METEOSATDataset(train_img),
                                             batch_size=batch_size,
-                                            shuffle=True, num_workers=1)
+                                            shuffle=True, num_workers=0)
 
 # Model architecture 
 
