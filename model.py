@@ -29,29 +29,26 @@ class METEOSATDataset(Dataset):
         for folder in os.listdir(path_):
           list_of_file = os.listdir(os.path.join(path_, folder))
           list_of_file.sort()
+          list_img = []
           for file_ in list_of_file:
-            self.data.append(os.path.join(folder, file_))
+            list_img.append(os.path.join(folder, file_))
+          self.data.append(list_img)
         self.path = path_
-        self.path_init = self.data[0][:6]
-        self.previous_image = np.load(os.path.join(self.path,self.data[0])).astype(np.float64)
+        #self.path_init = self.data[0][:6]
+        #self.previous_image = np.load(os.path.join(self.path,self.data[0])).astype(np.float64)
 
 
     def __len__(self):
         return len(self.data)
 
-    def __getitem__(self, idx):
-        img_name = os.path.join(self.path,self.data[idx])
-        image = np.load(img_name)
-        image = torch.from_numpy(image.astype(np.float64))
-        if self.data[idx][:6] != self.path_init or idx == 0 :
-          self.previous_image = image
-          idx += 1
-          img_name = os.path.join(self.path,self.data[idx])
-          image = np.load(img_name)
-          image = torch.from_numpy(image.astype(np.float64)) 
-        self.path_init = self.data[idx][:6]
-        img = (image - self.previous_image + 2)/4
-        self.previous_image = image
+    def __getitem__(self, index):
+        video_seq = self.data[index]
+        idx2 = (len(video_seq)-1)*random.random()
+        image_1 = np.load(os.path.join(self.path_,video_seq[idx2]))
+        image_1 = torch.from_numpy(image_1.astype(np.float64))
+        image_2 = np.load(os.path.join(self.path_,video_seq[idx2+1]))
+        image_2 = torch.from_numpy(image_2.astype(np.float64))
+        img = (image_2 - previous_image_1 + 2)/4
         return img
 
 
@@ -66,7 +63,7 @@ end_epoch = 150
 # Data loader 
 data_loader = torch.utils.data.DataLoader(dataset=METEOSATDataset(train_img),
                                             batch_size=batch_size,
-                                            shuffle=False, num_workers=0)
+                                            shuffle=True, num_workers=1)
 
 # Model architecture 
 
