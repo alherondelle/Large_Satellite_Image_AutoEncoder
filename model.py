@@ -47,12 +47,12 @@ class METEOSATDataset(Dataset):
           idx += 1
           img_name = os.path.join(self.path,self.data[idx])
           image = np.load(img_name).astype(np.float64)
-          image = torch.from_numpy(image) 
           if np.nan(image).any() == True :
             print(img_name)
           for c in range (2):
             if image[c].all() == image[c,0,0]:
               print(img_name)
+          image = torch.from_numpy(image) 
         self.path_init = self.data[idx][:6]
         img = (image - self.previous_image + 2)/4
         self.previous_image = image
