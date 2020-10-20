@@ -39,7 +39,7 @@ class METEOSATDataset(Dataset):
 
 
     def __len__(self):
-      len = 0
+      len_ = 0
       for i in self.data:
         len_ += len(i)
       return len_
