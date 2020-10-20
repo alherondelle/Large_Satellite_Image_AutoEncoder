@@ -43,7 +43,7 @@ class METEOSATDataset(Dataset):
         image = np.load(img_name)
         if np.nan(image).any() == True :
             print(img_name)
-          for c in range (2):
+        for c in range (2):
             if image[c].all() == image[c,0,0]:
               print(img_name)
         image = torch.from_numpy(image.astype(np.float64))
