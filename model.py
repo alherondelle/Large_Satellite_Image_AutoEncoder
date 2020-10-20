@@ -51,6 +51,7 @@ class METEOSATDataset(Dataset):
         self.path_init = self.data[idx][:6]
         img = (image - self.previous_image + 2)/4
         self.previous_image = image
+        print(img.shape)
         return img
 
 
@@ -124,9 +125,12 @@ for epoch in range(start_epoch, end_epoch):
     t0 = time()
     for i, img in enumerate(data_loader):
       img_ = Variable(img[:,:,:1420, :604]).cuda()
+      print(img_.shape)
         # ===================forward=====================
       output = ae(img_.float())
+      print(output.shape)
       loss = criterion(output, img_.float())
+      print(loss)
         # ===================backward====================
       optimizer.zero_grad()
       loss.backward()
