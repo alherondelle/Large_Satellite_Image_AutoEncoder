@@ -143,6 +143,8 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
         torch.save(ae.state_dict(), './conv_autoencoder_{}.pth'.format(epoch))
         pic = output[0].cpu()
         real_pic = img_[0].cpu()
+        pic = np.moveaxis(np.array(pic),0, -1)
+        real_pic = np.moveaxis(np.array(real_pic), 0, -1)
         save_image(pic, './image_{}.png'.format(epoch))
         save_image(real_pic, './image_real_{}.png'.format(epoch))
 
