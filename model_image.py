@@ -40,14 +40,15 @@ class METEOSATDataset(Dataset):
         for folder in os.listdir(path_):
           list_of_file = os.listdir(os.path.join(path_, folder))
           for files_ in list_of_file:
-              self.data.append(files_)
+              self.data.append(os.path.join(folder,files_)
+        self.path = path_
 
     def __len__(self):
       return len(self.data)
 
     def __getitem__(self, index):
         img_ = self.data[index]
-        image = np.load(img_)
+        image = np.load(os.path.join(self.path,img_))
         image = torch.from_numpy(image.astype(np.float64))
         return image
 
