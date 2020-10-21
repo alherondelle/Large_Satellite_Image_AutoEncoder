@@ -140,8 +140,8 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
           .format(epoch+1, opt.end_epoch, loss.item()*100, time() - t0))
     if epoch % 10 == 0:
         torch.save(ae.state_dict(), './conv_autoencoder_{}.pth'.format(epoch))
-        pic = output[0].cpu()
-        real_pic = img_[0].cpu()
+        pic = output[0].cpu().detach()
+        real_pic = img_[0].cpu().detach()
         pic = np.moveaxis(np.array(pic),0, -1)
         real_pic = np.moveaxis(np.array(real_pic), 0, -1)
         save_image(pic, './image_{}.png'.format(epoch))
@@ -154,5 +154,5 @@ torch.save(ae.state_dict(), './conv_autoencoder_{}.pth'.format(epoch))
 #ae.eval()
 
 # Save the trained model once the training is over: 
-torch.save(ae.state_dict(),  "./conv_autoencoder_%d.pth" % (epoch))
+torch.save(ae.state_dict(),  './conv_autoencoder_%d.pth" % (epoch))
 
