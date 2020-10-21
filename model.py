@@ -19,10 +19,20 @@ from time import time
 from torchvision.utils import save_image
 import torch.nn.functional as F
 import multiprocessing
+import argparse
+
+# Argument parser 
+
+# Training parameters 
+parser = argparse.ArgumentParser()
+parser.add_argument('--batch_size', default=64, type=int, help='batch size')
+parser.add_argument('--learning_rate', default=1e-3, type=float, help='learning rate')
+parser.add_argument('--start_epoch', default=0, type=float, help='starting epoch')
+parser.add_argument('--end_epoch', default=150, type=float, help='ending epoch')
+parser.add_argument('--train_img', default='../SatellitePredictionGAN/data/METEOSAT/train', type=str, help ='Path to training dataset')
+opt = parser.parse_args()
 
 # Image difference data loader
-# Shuffling dataset is not supported at the moment
-
 class METEOSATDataset(Dataset):
 
     def __init__(self, path_):
@@ -55,17 +65,10 @@ class METEOSATDataset(Dataset):
         return img
 
 
-# Training parameters 
-num_epochs = 200
-batch_size = 64
-learning_rate = 1e-3
-train_img = '../SatellitePredictionGAN/data/METEOSAT/train'
-start_epoch = 90
-end_epoch = 150
 
 # Data loader 
-data_loader = torch.utils.data.DataLoader(dataset=METEOSATDataset(train_img),
-                                            batch_size=batch_size,
+data_loader = torch.utils.data.DataLoader(dataset=METEOSATDataset(opt.train_img),
+                                            batch_size=opt.batch_size,
                                             shuffle=True, num_workers=0)
 
 # Model architecture 
@@ -108,10 +111,10 @@ class Autoencoder(nn.Module):
 
 # Model initialization and weights loading
 ae = Autoencoder().cuda()
-if start_epoch != 0:
-  ae.load_state_dict(torch.load("AE_%d.pth" %  start_epoch))
+if opt.start_epoch != 0:
+  ae.load_state_dict(torch.load("AE_%d.pth" %  opt.start_epoch))
 criterion = nn.MSELoss()
-optimizer = torch.optim.Adam(ae.parameters(), lr=learning_rate, weight_decay=1e-5)
+optimizer = torch.optim.Adam(ae.parameters(), lr=opt.learning_rate, weight_decay=1e-5)
 
 # Dataset info for metrics computing 
 
@@ -120,7 +123,7 @@ data_iter = iter(data_loader)
 
 # Training
 
-for epoch in range(start_epoch, end_epoch):
+for epoch in range(opt.start_epoch, opt.end_epoch):
     t0 = time()
     for i, img in tqdm(enumerate(data_loader)):
       img_ = Variable(img[:,:,:1420, :604]).cuda()
@@ -135,7 +138,7 @@ for epoch in range(start_epoch, end_epoch):
 
     # ===================log========================
     print('epoch [{}/{}], loss:{:.4f}, time:{:.4f}'
-          .format(epoch+1, end_epoch, loss.item()*100, time() - t0))
+          .format(epoch+1, opt.end_epoch, loss.item()*100, time() - t0))
     if epoch % 10 == 0:
         torch.save(ae.state_dict(), './conv_autoencoder_{}.pth'.format(epoch))
         pic = output[0].cpu()
