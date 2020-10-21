@@ -60,7 +60,7 @@ num_epochs = 200
 batch_size = 64
 learning_rate = 1e-3
 train_img = '../SatellitePredictionGAN/data/METEOSAT/train'
-start_epoch = 0
+start_epoch = 90
 end_epoch = 150
 
 # Data loader 
@@ -124,6 +124,7 @@ for epoch in range(start_epoch, end_epoch):
     t0 = time()
     for i, img in tqdm(enumerate(data_loader)):
       img_ = Variable(img[:,:,:1420, :604]).cuda()
+      print(img_.shape, 'image shape')
         # ===================forward=====================
       output = ae(img_.float())
       loss = criterion(output, img_.float())
