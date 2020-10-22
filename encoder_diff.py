@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import glob
 import random
 import cv2
@@ -25,10 +23,7 @@ import argparse
 
 # Training parameters 
 parser = argparse.ArgumentParser()
-parser.add_argument('--batch_size', default=64, type=int, help='batch size')
-parser.add_argument('--learning_rate', default=1e-3, type=float, help='learning rate')
 parser.add_argument('--start_epoch', default=0, type=float, help='starting epoch')
-parser.add_argument('--end_epoch', default=150, type=float, help='ending epoch')
 parser.add_argument('--train_img', default='../SatellitePredictionGAN/data/METEOSAT/train', type=str, help ='Path to training dataset')
 opt = parser.parse_args()
 
@@ -62,13 +57,13 @@ class METEOSATDataset(Dataset):
         image_2 = np.load(os.path.join(self.path,video_seq[idx_2+1]))
         image_2 = torch.from_numpy(image_2.astype(np.float64))
         img = (image_2 - image_1 + 2)/4
-        return img
+        return img, video_seq[idx_2+1]
 
 
 
 # Data loader 
 data_loader = torch.utils.data.DataLoader(dataset=METEOSATDataset(opt.train_img),
-                                            batch_size=opt.batch_size,
+                                            batch_size=1,
                                             shuffle=True, num_workers=0)
 
 # Model architecture 
@@ -83,11 +78,6 @@ class Autoencoder(nn.Module):
         self.conv2 = nn.Conv2d(16, 4, 3, padding=1)
         # pooling layer to reduce x-y dims by two; kernel and stride of 2
         self.pool = nn.MaxPool2d(2, 2)
-        
-        ## decoder layers ##
-        ## a kernel of 2 and a stride of 2 will increase the spatial dims by 2
-        self.t_conv1 = nn.ConvTranspose2d(4, 16, 2, stride=2)
-        self.t_conv2 = nn.ConvTranspose2d(16, 2, 2, stride=2)
 
 
     def forward(self, x):
@@ -99,67 +89,34 @@ class Autoencoder(nn.Module):
         # add second hidden layer
         x = F.relu(self.conv2(x))
         x = self.pool(x)  # compressed representation
-        
-        ## decode ##
-        # add transpose conv layers, with relu activation function
-        x = F.relu(self.t_conv1(x))
-        # output layer (with sigmoid for scaling from 0 to 1)
-        x = torch.sigmoid(self.t_conv2(x))
                 
         return x
 
 
 # Model initialization and weights loading
 ae = Autoencoder().cuda()
+ae = nn.Sequential(*list(ae.children()))
 if opt.start_epoch != 0:
-  ae.load_state_dict(torch.load("./conv_autoencoder_%d.pth" % (opt.start_epoch)))
+  ae.load_state_dict(torch.load("./conv_encoder_%d.pth" % (opt.start_epoch)))
 
-"""criterion = nn.MSELoss()
-optimizer = torch.optim.Adam(ae.parameters(), lr=opt.learning_rate, weight_decay=1e-5)
+ae.eval()
 
 # Dataset info for metrics computing 
 
 iter_per_epoch = len(data_loader)
 data_iter = iter(data_loader)
-"""
+
 # Training
-
-"""for epoch in range(opt.start_epoch, opt.end_epoch):
-    t0 = time()
-    for i, img in tqdm(enumerate(data_loader)):
-      img_ = Variable(img[:,:,:1420, :604]).cuda()
+for i, (img, image_name) in tqdm(enumerate(data_loader)):
+    img_ = Variable(img[:,:,:1420, :604]).cuda()
         # ===================forward=====================
-      output = ae(img_.float())
-      loss = criterion(output, img_.float())
+    output = ae(img_.float())
         # ===================backward====================
-      optimizer.zero_grad()
-      loss.backward()
-      optimizer.step()
-
+    pic = np.array(output[0].cpu().detach())
     # ===================log========================
-    print('epoch [{}/{}], loss:{:.4f}, time:{:.4f}'
-          .format(epoch+1, opt.end_epoch, loss.item()*100, time() - t0))
-    if epoch % 10 == 0:
-        torch.save(ae.state_dict(), './conv_autoencoder_{}.pth'.format(epoch))
-        pic = output[0].cpu().detach()
-        real_pic = img_[0].cpu().detach()
-        save_image(pic, './image_{}.png'.format(epoch))
-        save_image(real_pic, './image_real_{}.png'.format(epoch))"""
-
-"""# Saving trained model : Final
-torch.save(ae.state_dict(), './conv_autoencoder_{}.pth'.format(epoch))"""
-
-"""
-# Save the trained model once the training is over: 
-torch.save(ae.state_dict(),  "./conv_autoencoder_{}.pth".format(epoch))"""
-
-list_ae = list(ae.children())
-
-ae_encoder = nn.Sequential(*list_ae[:-2]).cuda()
-ae_decoder = nn.Sequential(*list_ae[-2:]).cuda()
-ae_encoder.eval()
-ae_decoder.eval()
-
-torch.save(ae_encoder.state_dict(), "./conv_encoder_%d.pth" % (opt.start_epoch))
-torch.save(ae_decoder.state_dict(), "./conv_decoder_%d.pth" % (opt.start_epoch))
-
+    image_name = str(image_name[0][:-4])
+    month_info = image_name.split('/')[0]
+    if not os.path.exists('./image_diff_encoding/'+month_info):
+        os.mkdir('./image_diff_encoding/'+month_info)
+    print(image_name)
+    np.save('./image_diff_encoding/'+image_name+'.npy', pic)
