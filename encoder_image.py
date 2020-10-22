@@ -101,7 +101,7 @@ for i, img in tqdm(enumerate(data_loader)):
     output = ae(img_.float())
     print(output.shape)
         # ===================backward====================
-    pic = output[0].cpu()
+    pic = np.array(output[0].cpu().detach())
     # ===================log========================
-    save_image(pic, './image_model_encoding/image_model_%d_%d.npy' % (epoch, i))
+    np.save('./image_model_encoding/image_model_%d_%d.npy' % (opt.start_epoch, i), pic)
 
