@@ -99,8 +99,9 @@ class Autoencoder(nn.Module):
 
 # Model initialization and weights loading
 ae = Autoencoder().cuda()
+print("./conv_autoencoder_model_%d.pth" % (opt.start_epoch))
 if opt.start_epoch != 0:
-  ae.load_state_dict(torch.load("./conv_autoencoder_model_{}.pth".format(opt.start_epoch)))
+  ae.load_state_dict(torch.load("./conv_autoencoder_model_%d.pth" % (opt.start_epoch)))
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(ae.parameters(), lr=opt.learning_rate, weight_decay=1e-5)
 
@@ -110,7 +111,7 @@ iter_per_epoch = len(data_loader)
 data_iter = iter(data_loader)
 
 # Training
-
+"""
 for epoch in range(opt.start_epoch, opt.end_epoch):
     t0 = time()
     for i, img in tqdm(enumerate(data_loader)):
@@ -135,9 +136,18 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
 
 # Saving trained model : Final
 torch.save(ae.state_dict(), './conv_autoencoder_model_{}.pth'.format(epoch))
+"""
+# Stopping train phase & Separating encoder / decoder 
+list_ae = list(ae.children())
 
-# Stopping train phase 
-#ae.eval()
+ae_encoder = nn.Sequential(*list_ae[:-2]).cuda()
+ae_decoder = nn.Sequential(*list_ae[-2:]).cuda()
+ae_encoder.eval()
+ae_decoder.eval()
 
+torch.save(ae_encoder.state_dict(), "./conv_encoder_image_{}.pth".format(start_epoch))
+torch.save(ae_decoder.state_dict(), "./conv_decoder_image_{}.pth".format(start_epoch))
+"""
 # Save the trained model once the training is over: 
 torch.save(ae.state_dict(),  "./conv_autoencoder_model_{}.pth".format(epoch))
+"""
