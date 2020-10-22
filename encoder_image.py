@@ -103,7 +103,7 @@ for i, (img, image_name) in tqdm(enumerate(data_loader)):
         # ===================backward====================
     pic = np.array(output[0].cpu().detach())
     # ===================log========================
-    image_name #= image_name[:-4]
+    image_name = image_name[0][:-4]
     print(image_name)
     np.save('./image_model_encoding/'+image_name+'.npy' % (opt.start_epoch, i), pic)
 
