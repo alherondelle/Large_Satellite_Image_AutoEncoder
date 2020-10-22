@@ -45,6 +45,7 @@ class METEOSATDataset(Dataset):
         img_ = self.data[index]
         image = np.load(os.path.join(self.path,img_))
         image = torch.from_numpy(image.astype(np.float64))
+        print(os.path.join(self.path,img_))
         return image, os.path.join(self.path,img_)
 
 
@@ -99,7 +100,6 @@ for i, (img, image_name) in tqdm(enumerate(data_loader)):
     img_ = Variable(img[:,:,:1420, :604]).cuda()
         # ===================forward=====================
     output = ae(img_.float())
-    print(output.shape)
         # ===================backward====================
     pic = np.array(output[0].cpu().detach())
     # ===================log========================
