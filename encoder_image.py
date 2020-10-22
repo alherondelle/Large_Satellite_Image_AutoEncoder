@@ -45,7 +45,7 @@ class METEOSATDataset(Dataset):
         img_ = self.data[index]
         image = np.load(os.path.join(self.path,img_))
         image = torch.from_numpy(image.astype(np.float64))
-        print(os.path.join(self.path,img_))
+        print(img_)
         return image, img_
 
 
@@ -103,7 +103,7 @@ for i, (img, image_name) in tqdm(enumerate(data_loader)):
         # ===================backward====================
     pic = np.array(output[0].cpu().detach())
     # ===================log========================
-    image_name = image_name[:-4]
+    image_name #= image_name[:-4]
     print(image_name)
     np.save('./image_model_encoding/'+image_name+'.npy' % (opt.start_epoch, i), pic)
 
