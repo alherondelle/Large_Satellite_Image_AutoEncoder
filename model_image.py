@@ -145,8 +145,8 @@ ae_decoder = nn.Sequential(*list_ae[-2:]).cuda()
 ae_encoder.eval()
 ae_decoder.eval()
 
-torch.save(ae_encoder.state_dict(), "./conv_encoder_image_{}.pth".format(start_epoch))
-torch.save(ae_decoder.state_dict(), "./conv_decoder_image_{}.pth".format(start_epoch))
+torch.save(ae_encoder.state_dict(), "./conv_encoder_image_{}.pth".format(opt.start_epoch))
+torch.save(ae_decoder.state_dict(), "./conv_decoder_image_{}.pth".format(opt.start_epoch))
 """
 # Save the trained model once the training is over: 
 torch.save(ae.state_dict(),  "./conv_autoencoder_model_{}.pth".format(epoch))
