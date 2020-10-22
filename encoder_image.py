@@ -46,7 +46,7 @@ class METEOSATDataset(Dataset):
         image = np.load(os.path.join(self.path,img_))
         image = torch.from_numpy(image.astype(np.float64))
         print(os.path.join(self.path,img_))
-        return image, os.path.join(self.path,img_)
+        return image, img_
 
 
 
