@@ -105,7 +105,6 @@ for i, (img, image_name) in tqdm(enumerate(data_loader)):
     # ===================log========================
     image_name = image_name[:-4]
     print(image_name)
-    save_image(pic, './image_model_encoding/'+image_name+'.npy' % (epoch, i))
-    np.save('./image_model_encoding/image_model_%d_%d.npy' % (opt.start_epoch, i), pic)
+    np.save('./image_model_encoding/'+image_name+'.npy' % (opt.start_epoch, i), pic)
 
 
