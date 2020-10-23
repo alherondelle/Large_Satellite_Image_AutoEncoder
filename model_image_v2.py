@@ -64,7 +64,7 @@ class Autoencoder(nn.Module):
         super(Autoencoder, self).__init__()
         #encoder
         in_features = 604*604
-        out_features = in_features // 2
+        out_features = in_features // 4
         self.enc1 = nn.Linear(in_features=in_features, out_features=out_features)
         in_features = out_features
         out_features = in_features//2
@@ -93,7 +93,7 @@ class Autoencoder(nn.Module):
         out_features =in_features *2
         self.dec4 = nn.Linear(in_features=in_features, out_features=out_features)
         in_features = out_features
-        out_features =in_features *2
+        out_features =in_features *4
         self.dec5 = nn.Linear(in_features=in_features, out_features=out_features)
 
 
