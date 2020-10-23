@@ -83,6 +83,7 @@ class Autoencoder(nn.Module):
         x = F.relu(self.enc3(x))
         x = F.relu(self.enc4(x))
         x = F.relu(self.enc5(x))
+        print(x.shape)
         #decoder
         x = F.relu(self.dec1(x))
         x = F.relu(self.dec2(x))
@@ -95,9 +96,8 @@ class Autoencoder(nn.Module):
 
 # Model initialization and weights loading
 ae = Autoencoder().cuda()
-print("./conv_autoencoder_model_%d.pth" % (opt.start_epoch))
 if opt.start_epoch != 0:
-  ae.load_state_dict(torch.load("./conv_autoencoder_model_%d.pth" % (opt.start_epoch)))
+  ae.load_state_dict(torch.load("./conv_autoencoder_model_v2%d.pth" % (opt.start_epoch)))
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(ae.parameters(), lr=opt.learning_rate, weight_decay=1e-5)
 
@@ -111,9 +111,10 @@ data_iter = iter(data_loader)
 for epoch in range(opt.start_epoch, opt.end_epoch):
     t0 = time()
     for i, img in tqdm(enumerate(data_loader)):
-      img_ = Variable(img[:,:,:604, :604]).cuda()
+      img_ = Variable(img[:,:,:604, :604].view(opt.batch_size, 2, -1)).cuda()
         # ===================forward=====================
-      output = ae(img_.float())
+      output = ae(img_.float()).view(opt.batch_size, 2, -1, -1)
+      print(output.shape) 
       loss = criterion(output, img_.float())
         # ===================backward====================
       optimizer.zero_grad()
@@ -124,16 +125,16 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
     print('epoch [{}/{}], loss:{:.4f}, time:{:.4f}'
           .format(epoch+1, opt.end_epoch, loss.item()*100, time() - t0))
     if epoch % 10 == 0:
-        torch.save(ae.state_dict(), './conv_autoencoder_model_{}.pth'.format(epoch))
+        torch.save(ae.state_dict(), './conv_autoencoder_model_v2{}.pth'.format(epoch))
         pic = output[0].cpu().detach()
         real_pic = img_[0].cpu().detach()
-        save_image(pic, './image_model_{}.png'.format(epoch))
-        save_image(real_pic, './image_real_model_{}.png'.format(epoch))
+        save_image(pic, './image_model_v2{}.png'.format(epoch))
+        save_image(real_pic, './image_real_model_v2{}.png'.format(epoch))
 
 # Saving trained model : Final
-torch.save(ae.state_dict(), './conv_autoencoder_model_{}.pth'.format(epoch))
+torch.save(ae.state_dict(), './conv_autoencoder_model_v2{}.pth'.format(epoch))
 
-# Stopping train phase & Separating encoder / decoder 
+"""# Stopping train phase & Separating encoder / decoder 
 list_ae = list(ae.children())
 
 ae_encoder = nn.Sequential(*list_ae[:-2]).cuda()
@@ -146,3 +147,4 @@ torch.save(ae_decoder.state_dict(), "./conv_decoder_image_%d.pth" % (opt.start_e
 
 # Save the trained model once the training is over: 
 torch.save(ae.state_dict(),  "./conv_autoencoder_model_{}.pth".format(epoch))
+"""
