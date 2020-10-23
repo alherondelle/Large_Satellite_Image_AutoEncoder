@@ -114,20 +114,19 @@ ae = Autoencoder().cuda()
 if opt.start_epoch != 0:
   ae.load_state_dict(torch.load("./conv_autoencoder_%d.pth" % (opt.start_epoch)))
 
-"""criterion = nn.MSELoss()
+criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(ae.parameters(), lr=opt.learning_rate, weight_decay=1e-5)
 
 # Dataset info for metrics computing 
 
 iter_per_epoch = len(data_loader)
 data_iter = iter(data_loader)
-"""
 # Training
 
-"""for epoch in range(opt.start_epoch, opt.end_epoch):
+for epoch in range(opt.start_epoch, opt.end_epoch):
     t0 = time()
     for i, img in tqdm(enumerate(data_loader)):
-      img_ = Variable(img[:,:,:1420, :604]).cuda()
+      img_ = Variable(img[:,:,:604, :604]).cuda() #1420 au lieu du premier 604
         # ===================forward=====================
       output = ae(img_.float())
       loss = criterion(output, img_.float())
@@ -144,14 +143,13 @@ data_iter = iter(data_loader)
         pic = output[0].cpu().detach()
         real_pic = img_[0].cpu().detach()
         save_image(pic, './image_{}.png'.format(epoch))
-        save_image(real_pic, './image_real_{}.png'.format(epoch))"""
+        save_image(real_pic, './image_real_{}.png'.format(epoch))
 
-"""# Saving trained model : Final
-torch.save(ae.state_dict(), './conv_autoencoder_{}.pth'.format(epoch))"""
+# Saving trained model : Final
+torch.save(ae.state_dict(), './conv_autoencoder_{}.pth'.format(epoch))
 
-"""
 # Save the trained model once the training is over: 
-torch.save(ae.state_dict(),  "./conv_autoencoder_{}.pth".format(epoch))"""
+torch.save(ae.state_dict(),  "./conv_autoencoder_{}.pth".format(epoch))
 
 list_ae = list(ae.children())
 
