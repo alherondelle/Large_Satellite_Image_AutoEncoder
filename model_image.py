@@ -48,7 +48,7 @@ class METEOSATDataset(Dataset):
 
     def __getitem__(self, index):
         img_ = self.data[index]
-        image = np.load(os.path.join(self.path,img_))
+        image = np.load(os.path.join(self.path,img_))s
         image = torch.from_numpy(image.astype(np.float64))
         return image
 
@@ -69,13 +69,15 @@ class Autoencoder(nn.Module):
         self.conv1 = nn.Conv2d(2, 16, 3, padding=1)  
         # conv layer (depth from 16 --> 4), 3x3 kernels
         self.conv2 = nn.Conv2d(16, 4, 3, padding=1)
+        self.conv3 = nn.Conv2d(4, 2, 3, padding=1)
         # pooling layer to reduce x-y dims by two; kernel and stride of 2
         self.pool = nn.MaxPool2d(2, 2)
         
         ## decoder layers ##
         ## a kernel of 2 and a stride of 2 will increase the spatial dims by 2
-        self.t_conv1 = nn.ConvTranspose2d(4, 16, 2, stride=2)
-        self.t_conv2 = nn.ConvTranspose2d(16, 2, 2, stride=2)
+        self.t_conv1 = nn.ConvTranspose2d(2, 4, 2, stride=2)
+        self.t_conv2 = nn.ConvTranspose2d(4, 16, 2, stride=2)
+        self.t_conv3 = nn.ConvTranspose2d(16, 2, 2, stride=2)
 
 
     def forward(self, x):
@@ -86,22 +88,26 @@ class Autoencoder(nn.Module):
         x = self.pool(x)
         # add second hidden layer
         x = F.relu(self.conv2(x))
-        x = self.pool(x)  # compressed representation
+        x = self.pool(x)  
+        # add third hidden layer
+        x = F.relu(self.conv3(x))
+        x = self.pool(x) # => compressed representation
         
         ## decode ##
         # add transpose conv layers, with relu activation function
         x = F.relu(self.t_conv1(x))
+        x = F.relu(self.t_conv2(x))
         # output layer (with sigmoid for scaling from 0 to 1)
-        x = torch.sigmoid(self.t_conv2(x))
+        x = torch.sigmoid(self.t_conv3(x))
                 
         return x
 
 
 # Model initialization and weights loading
 ae = Autoencoder().cuda()
-print("./conv_autoencoder_model_%d.pth" % (opt.start_epoch))
+print("./conv_autoencoder_model_v2_%d.pth" % (opt.start_epoch))
 if opt.start_epoch != 0:
-  ae.load_state_dict(torch.load("./conv_autoencoder_model_%d.pth" % (opt.start_epoch)))
+  ae.load_state_dict(torch.load("./conv_autoencoder_model_v2_%d.pth" % (opt.start_epoch)))
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(ae.parameters(), lr=opt.learning_rate, weight_decay=1e-5)
 
@@ -128,14 +134,14 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
     print('epoch [{}/{}], loss:{:.4f}, time:{:.4f}'
           .format(epoch+1, opt.end_epoch, loss.item()*100, time() - t0))
     if epoch % 10 == 0:
-        torch.save(ae.state_dict(), './conv_autoencoder_model_{}.pth'.format(epoch))
+        torch.save(ae.state_dict(), './conv_autoencoder_model_v2_{}.pth'.format(epoch))
         pic = output[0].cpu().detach()
         real_pic = img_[0].cpu().detach()
-        save_image(pic, './image_model_{}.png'.format(epoch))
-        save_image(real_pic, './image_real_model_{}.png'.format(epoch))
+        save_image(pic, './image_model_v2_{}.png'.format(epoch))
+        save_image(real_pic, './image_real_model_v2_{}.png'.format(epoch))
 
 # Saving trained model : Final
-torch.save(ae.state_dict(), './conv_autoencoder_model_{}.pth'.format(epoch))
+torch.save(ae.state_dict(), './conv_autoencoder_model_v2_{}.pth'.format(epoch))
 
 # Stopping train phase & Separating encoder / decoder 
 list_ae = list(ae.children())
@@ -145,9 +151,9 @@ ae_decoder = nn.Sequential(*list_ae[-2:]).cuda()
 ae_encoder.eval()
 ae_decoder.eval()
 
-torch.save(ae_encoder.state_dict(), "./conv_encoder_image_%d.pth" % (opt.start_epoch))
-torch.save(ae_decoder.state_dict(), "./conv_decoder_image_%d.pth" % (opt.start_epoch))
+torch.save(ae_encoder.state_dict(), "./conv_encoder_image_v2_%d.pth" % (opt.start_epoch))
+torch.save(ae_decoder.state_dict(), "./conv_decoder_image_v2_%d.pth" % (opt.start_epoch))
 
 # Save the trained model once the training is over: 
-torch.save(ae.state_dict(),  "./conv_autoencoder_model_{}.pth".format(epoch))
+torch.save(ae.state_dict(),  "./conv_autoencoder_model_v2_%d.pth" % (epoch))
 
