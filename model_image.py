@@ -84,6 +84,7 @@ class Autoencoder(nn.Module):
         ## encode ##
         # add hidden layers with relu activation function
         # and maxpooling after
+        print(x.shape)
         x = F.relu(self.conv1(x))
         x = self.pool(x)
         # add second hidden layer
@@ -92,20 +93,19 @@ class Autoencoder(nn.Module):
         # add third hidden layer
         x = F.relu(self.conv3(x))
         x = self.pool(x) # => compressed representation
-        
+        print(x.shape)
         ## decode ##
         # add transpose conv layers, with relu activation function
         x = F.relu(self.t_conv1(x))
         x = F.relu(self.t_conv2(x))
         # output layer (with sigmoid for scaling from 0 to 1)
         x = torch.sigmoid(self.t_conv3(x))
-                
+        print(x.shape)
         return x
 
 
 # Model initialization and weights loading
 ae = Autoencoder().cuda()
-print("./conv_autoencoder_model_v2_%d.pth" % (opt.start_epoch))
 if opt.start_epoch != 0:
   ae.load_state_dict(torch.load("./conv_autoencoder_model_v2_%d.pth" % (opt.start_epoch)))
 criterion = nn.MSELoss()
