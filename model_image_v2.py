@@ -64,36 +64,36 @@ class Autoencoder(nn.Module):
         super(Autoencoder, self).__init__()
         #encoder
         in_features = 604*604
-        out_features //=in_features
+        out_features = in_features // 2
         self.enc1 = nn.Linear(in_features=in_features, out_features=out_features)
         in_features = out_features
-        out_features //=in_features
+        out_features = in_features//2
         self.enc2 = nn.Linear(n_features=in_features, out_features=out_features)
         in_features = out_features
-        out_features //=in_features
+        out_features = in_features//2
         self.enc3 = nn.Linear(n_features=in_features, out_features=out_features)
         in_features = out_features
-        out_features //=in_features
+        out_features = in_features//2
         self.enc4 = nn.Linear(n_features=in_features, out_features=out_features)
         in_features = out_features
-        out_features //=in_features
+        out_features = in_features//2
         self.enc5 = nn.Linear(in_features=in_features, out_features=out_features)
-        
+
         # decoder 
         in_features = out_features
-        out_features *=in_features
+        out_features =in_features *2
         self.dec1 = nn.Linear(in_features=in_features, out_features=out_features)
         in_features = out_features
-        out_features *=in_features
+        out_features =in_features *2
         self.dec2 = nn.Linear(in_features=in_features, out_features=out_features)
         in_features = out_features
-        out_features *=in_features
+        out_features =in_features *2
         self.dec3 = nn.Linear(in_features=in_features, out_features=out_features)
         in_features = out_features
-        out_features *=in_features
+        out_features =in_features *2
         self.dec4 = nn.Linear(in_features=in_features, out_features=out_features)
         in_features = out_features
-        out_features *=in_features
+        out_features =in_features *2
         self.dec5 = nn.Linear(in_features=in_features, out_features=out_features)
 
 
