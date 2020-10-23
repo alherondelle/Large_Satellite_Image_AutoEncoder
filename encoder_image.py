@@ -97,7 +97,7 @@ data_iter = iter(data_loader)
 
 # Training
 for i, (img, image_name) in tqdm(enumerate(data_loader)):
-    img_ = Variable(img[:,:,:604, :604]).cuda()
+    img_ = Variable(img[:,:,:600, :600]).cuda()
         # ===================forward=====================
     output = ae(img_.float())
         # ===================backward====================
