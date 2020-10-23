@@ -68,15 +68,15 @@ class Autoencoder(nn.Module):
         # conv layer (depth from 1 --> 16), 3x3 kernels
         self.conv1 = nn.Conv2d(2, 16, 3, padding=1)  
         # conv layer (depth from 16 --> 4), 3x3 kernels
-        self.conv2 = nn.Conv2d(16, 4, 3, padding=1)
-        self.conv3 = nn.Conv2d(4, 2, 3, padding=1)
+        self.conv2 = nn.Conv2d(16, 8, 3, padding=1)
+        self.conv3 = nn.Conv2d(8, 4, 3, padding=1)
         # pooling layer to reduce x-y dims by two; kernel and stride of 2
         self.pool = nn.MaxPool2d(2, 2)
         
         ## decoder layers ##
         ## a kernel of 2 and a stride of 2 will increase the spatial dims by 2
-        self.t_conv1 = nn.ConvTranspose2d(2, 4, 2, stride=2)
-        self.t_conv2 = nn.ConvTranspose2d(4, 16, 2, stride=2)
+        self.t_conv1 = nn.ConvTranspose2d(4, 8, 2, stride=2)
+        self.t_conv2 = nn.ConvTranspose2d(8, 16, 2, stride=2)
         self.t_conv3 = nn.ConvTranspose2d(16, 2, 2, stride=2)
 
 
@@ -121,7 +121,7 @@ data_iter = iter(data_loader)
 for epoch in range(opt.start_epoch, opt.end_epoch):
     t0 = time()
     for i, img in tqdm(enumerate(data_loader)):
-      img_ = Variable(img[:,:,:604, :604]).cuda()
+      img_ = Variable(img[:,:,:600, :600]).cuda()
         # ===================forward=====================
       output = ae(img_.float())
       loss = criterion(output, img_.float())
