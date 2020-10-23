@@ -63,17 +63,38 @@ class Autoencoder(nn.Module):
     def __init__(self):
         super(Autoencoder, self).__init__()
         #encoder
-        self.enc1 = nn.Linear(in_features=784, out_features=256)
-        self.enc2 = nn.Linear(in_features=256, out_features=128)
-        self.enc3 = nn.Linear(in_features=128, out_features=64)
-        self.enc4 = nn.Linear(in_features=64, out_features=32)
-        self.enc5 = nn.Linear(in_features=32, out_features=16)
+        in_features = 604*604
+        out_features //=in_features
+        self.enc1 = nn.Linear(in_features=in_features, out_features=out_features)
+        in_features = out_features
+        out_features //=in_features
+        self.enc2 = nn.Linear(n_features=in_features, out_features=out_features)
+        in_features = out_features
+        out_features //=in_features
+        self.enc3 = nn.Linear(n_features=in_features, out_features=out_features)
+        in_features = out_features
+        out_features //=in_features
+        self.enc4 = nn.Linear(n_features=in_features, out_features=out_features)
+        in_features = out_features
+        out_features //=in_features
+        self.enc5 = nn.Linear(in_features=in_features, out_features=out_features)
+        
         # decoder 
-        self.dec1 = nn.Linear(in_features=16, out_features=32)
-        self.dec2 = nn.Linear(in_features=32, out_features=64)
-        self.dec3 = nn.Linear(in_features=64, out_features=128)
-        self.dec4 = nn.Linear(in_features=128, out_features=256)
-        self.dec5 = nn.Linear(in_features=256, out_features=784)
+        in_features = out_features
+        out_features *=in_features
+        self.dec1 = nn.Linear(in_features=in_features, out_features=out_features)
+        in_features = out_features
+        out_features *=in_features
+        self.dec2 = nn.Linear(in_features=in_features, out_features=out_features)
+        in_features = out_features
+        out_features *=in_features
+        self.dec3 = nn.Linear(in_features=in_features, out_features=out_features)
+        in_features = out_features
+        out_features *=in_features
+        self.dec4 = nn.Linear(in_features=in_features, out_features=out_features)
+        in_features = out_features
+        out_features *=in_features
+        self.dec5 = nn.Linear(in_features=in_features, out_features=out_features)
 
 
     def forward(self, x):
@@ -97,7 +118,7 @@ class Autoencoder(nn.Module):
 # Model initialization and weights loading
 ae = Autoencoder().cuda()
 if opt.start_epoch != 0:
-  ae.load_state_dict(torch.load("./conv_autoencoder_model_v2%d.pth" % (opt.start_epoch)))
+  ae.load_state_dict(torch.load("./conv_autoencoder_model_v2_%d.pth" % (opt.start_epoch)))
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(ae.parameters(), lr=opt.learning_rate, weight_decay=1e-5)
 
@@ -111,9 +132,9 @@ data_iter = iter(data_loader)
 for epoch in range(opt.start_epoch, opt.end_epoch):
     t0 = time()
     for i, img in tqdm(enumerate(data_loader)):
-      img_ = Variable(img[:,:,:604, :604].view(opt.batch_size, 2, -1)).cuda()
+      img_ = Variable(img[:,:,:604, :604].reshape(opt.batch_size, 2, 604*604)).cuda()
         # ===================forward=====================
-      output = ae(img_.float()).view(opt.batch_size, 2, -1, -1)
+      output = ae(img_.float()).reshape(opt.batch_size, 2, 604, 604)
       print(output.shape) 
       loss = criterion(output, img_.float())
         # ===================backward====================
@@ -125,14 +146,14 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
     print('epoch [{}/{}], loss:{:.4f}, time:{:.4f}'
           .format(epoch+1, opt.end_epoch, loss.item()*100, time() - t0))
     if epoch % 10 == 0:
-        torch.save(ae.state_dict(), './conv_autoencoder_model_v2{}.pth'.format(epoch))
+        torch.save(ae.state_dict(), './conv_autoencoder_model_v2_{}.pth'.format(epoch))
         pic = output[0].cpu().detach()
         real_pic = img_[0].cpu().detach()
-        save_image(pic, './image_model_v2{}.png'.format(epoch))
-        save_image(real_pic, './image_real_model_v2{}.png'.format(epoch))
+        save_image(pic, './image_model_v2_{}.png'.format(epoch))
+        save_image(real_pic, './image_real_model_v2_{}.png'.format(epoch))
 
 # Saving trained model : Final
-torch.save(ae.state_dict(), './conv_autoencoder_model_v2{}.pth'.format(epoch))
+torch.save(ae.state_dict(), './conv_autoencoder_model_v2_{}.pth'.format(epoch))
 
 """# Stopping train phase & Separating encoder / decoder 
 list_ae = list(ae.children())
