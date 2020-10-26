@@ -85,24 +85,17 @@ class Autoencoder(nn.Module):
         # and maxpooling after
         x = F.relu(self.conv1(x))
         x = self.pool(x)
-        print('conv1: ',x.shape)
         # add second hidden layer
         x = F.relu(self.conv2(x))
         x = self.pool(x)  
-        print('conv2: ',x.shape)
         # add third hidden layer
         x = F.relu(self.conv3(x))
-        x = self.pool(x)
-        print('conv3: ',x.shape) # => compressed representation
+        x = self.pool(x)# => compressed representation
         ## decode ##
         # add transpose conv layers, with relu activation function
         x = F.relu(self.t_conv1(x))
-        print('t_conv1: ',x.shape) 
         x = F.relu(self.t_conv2(x))
-        print('t_conv2: ',x.shape) 
         # output layer (with sigmoid for scaling from 0 to 1)
-        x = torch.sigmoid(self.t_conv3(x))
-        print('t_conv3: ',x.shape) 
         return x
 
 
@@ -126,7 +119,6 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
       img_ = Variable(img[:,:,:608, :608]).cuda()
         # ===================forward=====================
       output = ae(img_.float())
-      exit()
       loss = criterion(output, img_.float())
         # ===================backward====================
       optimizer.zero_grad()
@@ -146,15 +138,14 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
 # Saving trained model : Final
 torch.save(ae.state_dict(), './conv_autoencoder_model_v2_{}.pth'.format(epoch))
 # Stopping train phase & Separating encoder / decoder 
+
 ae.eval()
 ae_encoder_keys = ["conv1.weight", "conv1.bias", "conv2.weight", "conv2.bias", "conv3.weight", "conv3.bias", 'pool.weight', 'pool.biais']
 ae_decoder_keys = ['t_conv1.weight', 't_conv2.weight', 't_conv3.weight', 't_conv1.bias', 't_conv2.bias', 't_conv3.bias']
-#ae_encoder_param = {k:v for k,v in ae.state_dict().items() if k in ae_encoder_keys}
+ae_encoder_param = {k:v for k,v in ae.state_dict().items() if k in ae_encoder_keys}
 ae_decoder_param = {k:v for k,v in ae.state_dict().items() if k in ae_decoder_keys}
 
-#torch.save(ae_encoder_param, "./conv_encoder_image_v2_%d.pth" % (opt.start_epoch))
-torch.save(ae_decoder_param, "./conv_decoder_image_v2_%d.pth" % (opt.start_epoch))
-
-# Save the trained model once the training is over: 
-#torch.save(ae.state_dict(),  "./conv_autoencoder_model_v2_%d.pth" % (epoch))
+torch.save(ae_encoder_param, "./conv_encoder_image_v2_%d.pth" % (epoch))
+torch.save(ae_decoder_param, "./conv_decoder_image_v2_%d.pth" % (epoch))
+$
 
