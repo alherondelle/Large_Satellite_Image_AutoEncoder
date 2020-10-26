@@ -147,5 +147,4 @@ ae_decoder_param = {k:v for k,v in ae.state_dict().items() if k in ae_decoder_ke
 
 torch.save(ae_encoder_param, "./conv_encoder_image_v2_%d.pth" % (epoch))
 torch.save(ae_decoder_param, "./conv_decoder_image_v2_%d.pth" % (epoch))
-$
 
