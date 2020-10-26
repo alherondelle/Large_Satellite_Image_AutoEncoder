@@ -118,7 +118,7 @@ iter_per_epoch = len(data_loader)
 data_iter = iter(data_loader)
 
 # Training
-
+"""
 for epoch in range(opt.start_epoch, opt.end_epoch):
     t0 = time()
     for i, img in tqdm(enumerate(data_loader)):
@@ -144,12 +144,12 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
 
 # Saving trained model : Final
 torch.save(ae.state_dict(), './conv_autoencoder_model_v2_{}.pth'.format(epoch))
-
+"""
 # Stopping train phase & Separating encoder / decoder 
 list_ae = list(ae.children())
 
-ae_encoder = nn.Sequential(*list_ae[:-3]).cuda()
-ae_decoder = nn.Sequential(*list_ae[-3:]).cuda()
+ae_encoder = list_ae[:-3].cuda()
+ae_decoder = list_ae[-3:].cuda()
 ae_encoder.eval()
 ae_decoder.eval()
 

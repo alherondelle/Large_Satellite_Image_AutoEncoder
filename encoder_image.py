@@ -60,10 +60,10 @@ class Autoencoder(nn.Module):
     def __init__(self):
         super(Autoencoder, self).__init__()
         ## encoder layers ##
-        self.0 = nn.Conv2d(2, 16, 3, padding=1)  
+        self.conv1 = nn.Conv2d(2, 16, 3, padding=1)  
         # conv layer (depth from 16 --> 4), 3x3 kernels
-        self.1 = nn.Conv2d(16, 8, 3, padding=1)
-        self.2= nn.Conv2d(8, 4, 3, padding=1)
+        self.conv2 = nn.Conv2d(16, 8, 3, padding=1)
+        self.conv3 = nn.Conv2d(8, 4, 3, padding=1)
         # pooling layer to reduce x-y dims by two; kernel and stride of 2
         self.pool = nn.MaxPool2d(2, 2)
 
@@ -72,15 +72,15 @@ class Autoencoder(nn.Module):
         ## encode ##
         # add hidden layers with relu activation function
         # and maxpooling after
-        x = F.relu(self.0(x))
+        x = F.relu(self.conv1(x))
         x = self.pool(x)
         print('conv1: ',x.shape)
         # add second hidden layer
-        x = F.relu(self.1(x))
+        x = F.relu(self.conv2(x))
         x = self.pool(x)  
         print('conv2: ',x.shape)
         # add third hidden layer
-        x = F.relu(self.2(x))
+        x = F.relu(self.conv3(x))
         x = self.pool(x)
         print('conv3: ',x.shape)
                 
