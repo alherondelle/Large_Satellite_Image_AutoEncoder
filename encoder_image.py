@@ -98,7 +98,6 @@ ae.eval()
 iter_per_epoch = len(data_loader)
 data_iter = iter(data_loader)
 
-# Training
 for i, (img, image_name) in tqdm(enumerate(data_loader)):
     img_ = Variable(img[:,:,:600, :600]).cuda()
         # ===================forward=====================
