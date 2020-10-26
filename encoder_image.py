@@ -89,7 +89,7 @@ class Autoencoder(nn.Module):
 ae = Autoencoder().cuda()
 ae = nn.Sequential(*list(ae.children()))
 if opt.start_epoch != 0:
-  ae.load_state_dict(torch.load("./conv_autoencoder_model_v2_%d.pth" % (opt.start_epoch)))
+  ae.load_state_dict(torch.load("./conv_encoder_image_v2_%d.pth" % (opt.start_epoch)))
 
 ae.eval()
 

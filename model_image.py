@@ -92,7 +92,6 @@ class Autoencoder(nn.Module):
         # add third hidden layer
         x = F.relu(self.conv3(x))
         x = self.pool(x) # => compressed representation
-        print(x.shape)
         ## decode ##
         # add transpose conv layers, with relu activation function
         x = F.relu(self.t_conv1(x))
@@ -123,7 +122,6 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
         # ===================forward=====================
       output = ae(img_.float())
       loss = criterion(output, img_.float())
-      exit()
         # ===================backward====================
       optimizer.zero_grad()
       loss.backward()
