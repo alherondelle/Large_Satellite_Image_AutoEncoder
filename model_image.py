@@ -148,8 +148,8 @@ torch.save(ae.state_dict(), './conv_autoencoder_model_v2_{}.pth'.format(epoch))
 # Stopping train phase & Separating encoder / decoder 
 print(ae.eval())
 
-ae_encoder = nn.Sequential(*list_ae[:-3]).cuda()
-ae_decoder = nn.Sequential(*list_ae[-3:]).cuda()
+ae_encoder = ae[:-3].cuda()
+ae_decoder = ae[-3:].cuda()
 ae_encoder.eval()
 ae_decoder.eval()
 print(ae_encoder.eval())
