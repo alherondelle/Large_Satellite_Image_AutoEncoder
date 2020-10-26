@@ -105,7 +105,7 @@ for i, (img, image_name) in tqdm(enumerate(data_loader)):
         # ===================forward=====================
     output = ae(img_.float())
         # ===================backward====================
-    exit()
+    print('stop')
     pic = np.array(output[0].cpu().detach())
     # ===================log========================
     image_name = str(image_name[0][:-4])
