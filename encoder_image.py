@@ -76,13 +76,13 @@ class Autoencoder(nn.Module):
         x = self.pool(x)
         print('conv1: ',x.shape)
         # add second hidden layer
-        x = F.relu('conv1: ',self.conv2(x))
+        x = F.relu(self.conv2(x))
         x = self.pool(x)  
-        print(x.shape)
+        print('conv2: 'x.shape)
         # add third hidden layer
-        x = F.relu('conv1: ',self.conv3(x))
+        x = F.relu(self.conv3(x))
         x = self.pool(x)
-        print(x.shape)
+        print('conv3: 'x.shape)
                 
         return x
 
