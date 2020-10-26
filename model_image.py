@@ -146,16 +146,14 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
 torch.save(ae.state_dict(), './conv_autoencoder_model_v2_{}.pth'.format(epoch))
 """
 # Stopping train phase & Separating encoder / decoder 
-print(ae.state_dict())
-ae_encoder =  nn.Sequential(*list(ae.modules())[:-3]).cuda()
+ae.eval()
+ae_encoder_keys = ['conv1', 'conv2', 'conv3']
+ae_decoder_keys = ['t_conv1, t_conv2, t_conv3']
+ae_encoder_param = {k:v for k,v in ae.state_dict().items() if k in ae_encoder_keys}
+ae_decoder_param = {k:v for k,v in ae.state_dict().items() if k in ae_decoder_keys}
 
-ae_decoder =  nn.Sequential(*list(ae.modules())[-3:]).cuda()
-
-ae_encoder.eval()
-ae_decoder.eval()
-
-torch.save(ae_encoder.state_dict(), "./conv_encoder_image_v2_%d.pth" % (opt.start_epoch))
-torch.save(ae_decoder.state_dict(), "./conv_decoder_image_v2_%d.pth" % (opt.start_epoch))
+torch.save(ae_encoder_param, "./conv_encoder_image_v2_%d.pth" % (opt.start_epoch))
+torch.save(ae_decoder_param, "./conv_decoder_image_v2_%d.pth" % (opt.start_epoch))
 
 # Save the trained model once the training is over: 
 #torch.save(ae.state_dict(),  "./conv_autoencoder_model_v2_%d.pth" % (epoch))
