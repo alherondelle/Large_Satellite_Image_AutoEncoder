@@ -61,10 +61,10 @@ class Autoencoder(nn.Module):
     def __init__(self):
         super(Autoencoder, self).__init__()
         ## encoder layers ##
-        # conv layer (depth from 1 --> 16), 3x3 kernels
         self.conv1 = nn.Conv2d(2, 16, 3, padding=1)  
         # conv layer (depth from 16 --> 4), 3x3 kernels
-        self.conv2 = nn.Conv2d(16, 4, 3, padding=1)
+        self.conv2 = nn.Conv2d(16, 8, 3, padding=1)
+        self.conv3 = nn.Conv2d(8, 4, 3, padding=1)
         # pooling layer to reduce x-y dims by two; kernel and stride of 2
         self.pool = nn.MaxPool2d(2, 2)
 
@@ -77,7 +77,10 @@ class Autoencoder(nn.Module):
         x = self.pool(x)
         # add second hidden layer
         x = F.relu(self.conv2(x))
-        x = self.pool(x)  # compressed representation
+        x = self.pool(x)  
+        # add third hidden layer
+        x = F.relu(self.conv3(x))
+        x = self.pool(x)
                 
         return x
 
@@ -86,7 +89,7 @@ class Autoencoder(nn.Module):
 ae = Autoencoder().cuda()
 ae = nn.Sequential(*list(ae.children()))
 if opt.start_epoch != 0:
-  ae.load_state_dict(torch.load("./conv_encoder_image_%d.pth" % (opt.start_epoch)))
+  ae.load_state_dict(torch.load("./conv_autoencoder_model_v2_%d.pth" % (opt.start_epoch)))
 
 ae.eval()
 
