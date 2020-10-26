@@ -68,8 +68,8 @@ class Autoencoder(nn.Module):
         # conv layer (depth from 1 --> 16), 3x3 kernels
         self.conv1 = nn.Conv2d(2, 16, 3, padding = 2)  
         # conv layer (depth from 16 --> 4), 3x3 kernels
-        self.conv2 = nn.Conv2d(16, 8, 3, padding=1)
-        self.conv3 = nn.Conv2d(8, 4, 3, padding=1)
+        self.conv2 = nn.Conv2d(16, 8, 3, padding=2)
+        self.conv3 = nn.Conv2d(8, 4, 3, padding=2)
         # pooling layer to reduce x-y dims by two; kernel and stride of 2
         self.pool = nn.MaxPool2d(2, 2)
         ## decoder layers ##
