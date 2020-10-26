@@ -81,6 +81,7 @@ class Autoencoder(nn.Module):
         # add third hidden layer
         x = F.relu(self.conv3(x))
         x = self.pool(x)
+        print(x.shape)
                 
         return x
 
@@ -91,7 +92,7 @@ ae = nn.Sequential(*list(ae.children()))
 if opt.start_epoch != 0:
   ae.load_state_dict(torch.load("./conv_encoder_image_v2_%d.pth" % (opt.start_epoch)))
 
-ae.eval()
+#ae.eval()
 
 # Dataset info for metrics computing 
 
