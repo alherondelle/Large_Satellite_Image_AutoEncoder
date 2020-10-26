@@ -147,8 +147,8 @@ torch.save(ae.state_dict(), './conv_autoencoder_model_v2_{}.pth'.format(epoch))
 """
 # Stopping train phase & Separating encoder / decoder 
 ae.eval()
-ae_encoder_keys = ['conv1', 'conv2', 'conv3']
-ae_decoder_keys = ['t_conv1, t_conv2, t_conv3']
+ae_encoder_keys = ["conv1.weight", "conv1.bias", "conv2.weight", "conv2.bias", "conv3.weight", "conv3.bias", 'pool.weight', 'pool.biais']
+ae_decoder_keys = ['t_conv1.weight', 't_conv2.weight', 't_conv3.weight', 't_conv1.biais', 't_conv2.biais', 't_conv3.biais']
 ae_encoder_param = {k:v for k,v in ae.state_dict().items() if k in ae_encoder_keys}
 ae_decoder_param = {k:v for k,v in ae.state_dict().items() if k in ae_decoder_keys}
 
