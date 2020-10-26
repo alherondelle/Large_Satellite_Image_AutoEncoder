@@ -123,7 +123,7 @@ data_iter = iter(data_loader)
 for epoch in range(opt.start_epoch, opt.end_epoch):
     t0 = time()
     for i, img in tqdm(enumerate(data_loader)):
-      img_ = Variable(img[:,:,:604, :604]).cuda()
+      img_ = Variable(img[:,:,:608, :608]).cuda()
         # ===================forward=====================
       output = ae(img_.float())
       exit()
