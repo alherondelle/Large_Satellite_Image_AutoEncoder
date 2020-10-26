@@ -45,7 +45,6 @@ class METEOSATDataset(Dataset):
         img_ = self.data[index]
         image = np.load(os.path.join(self.path,img_))
         image = torch.from_numpy(image.astype(np.float64))
-        print(img_)
         return image, img_
 
 
@@ -75,13 +74,13 @@ class Autoencoder(nn.Module):
         # and maxpooling after
         x = F.relu(self.conv1(x))
         x = self.pool(x)
-        print(x.shape)
+        print('conv1: ',x.shape)
         # add second hidden layer
-        x = F.relu(self.conv2(x))
+        x = F.relu('conv1: ',self.conv2(x))
         x = self.pool(x)  
         print(x.shape)
         # add third hidden layer
-        x = F.relu(self.conv3(x))
+        x = F.relu('conv1: ',self.conv3(x))
         x = self.pool(x)
         print(x.shape)
                 
