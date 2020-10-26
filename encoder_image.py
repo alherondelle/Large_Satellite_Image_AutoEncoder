@@ -104,13 +104,13 @@ for i, (img, image_name) in tqdm(enumerate(data_loader)):
         # ===================forward=====================
     output = ae(img_.float())
         # ===================backward====================
+    print(output.shape)
     pic = np.array(output[0].cpu().detach())
     # ===================log========================
     image_name = str(image_name[0][:-4])
     month_info = image_name.split('/')[0]
     if not os.path.exists('./image_model_encoding_test/'+month_info):
         os.mkdir('./image_model_encoding_test/'+month_info)
-    print(image_name)
     np.save('./image_model_encoding_test/'+image_name+'.npy', pic)
 
 
