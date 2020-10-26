@@ -86,12 +86,16 @@ class Autoencoder(nn.Module):
         # and maxpooling after
         x = F.relu(self.conv1(x))
         x = self.pool(x)
+        print(x.shape)
         # add second hidden layer
         x = F.relu(self.conv2(x))
         x = self.pool(x)  
+        print(x.shape)
         # add third hidden layer
         x = F.relu(self.conv3(x))
-        x = self.pool(x) # => compressed representation
+        x = self.pool(x)
+        print(x.shape) # => compressed representation
+
         ## decode ##
         # add transpose conv layers, with relu activation function
         x = F.relu(self.t_conv1(x))
@@ -114,13 +118,14 @@ iter_per_epoch = len(data_loader)
 data_iter = iter(data_loader)
 
 # Training
-"""
+
 for epoch in range(opt.start_epoch, opt.end_epoch):
     t0 = time()
     for i, img in tqdm(enumerate(data_loader)):
       img_ = Variable(img[:,:,:600, :600]).cuda()
         # ===================forward=====================
       output = ae(img_.float())
+      exit()
       loss = criterion(output, img_.float())
         # ===================backward====================
       optimizer.zero_grad()
@@ -139,7 +144,7 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
 
 # Saving trained model : Final
 torch.save(ae.state_dict(), './conv_autoencoder_model_v2_{}.pth'.format(epoch))
-"""
+
 # Stopping train phase & Separating encoder / decoder 
 list_ae = list(ae.children())
 

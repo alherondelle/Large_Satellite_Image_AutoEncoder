@@ -75,9 +75,11 @@ class Autoencoder(nn.Module):
         # and maxpooling after
         x = F.relu(self.conv1(x))
         x = self.pool(x)
+        print(x.shape)
         # add second hidden layer
         x = F.relu(self.conv2(x))
         x = self.pool(x)  
+        print(x.shape)
         # add third hidden layer
         x = F.relu(self.conv3(x))
         x = self.pool(x)
@@ -92,7 +94,7 @@ ae = nn.Sequential(*list(ae.children()))
 if opt.start_epoch != 0:
   ae.load_state_dict(torch.load("./conv_encoder_image_v2_%d.pth" % (opt.start_epoch)))
 
-#ae.eval()
+ae.eval()
 
 # Dataset info for metrics computing 
 
@@ -104,7 +106,7 @@ for i, (img, image_name) in tqdm(enumerate(data_loader)):
         # ===================forward=====================
     output = ae(img_.float())
         # ===================backward====================
-    print(output.shape)
+    exit()
     pic = np.array(output[0].cpu().detach())
     # ===================log========================
     image_name = str(image_name[0][:-4])
