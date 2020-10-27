@@ -65,7 +65,6 @@ class Autoencoder(nn.Module):
         self.t_conv2 = nn.ConvTranspose2d(8, 16, 2, stride=2)
         self.t_conv3 = nn.ConvTranspose2d(16, 2, 2, stride=2)
 
-
     def forward(self, x):
         ## add transpose conv layers, with relu activation function
         x = F.relu(self.t_conv1(x))
@@ -90,7 +89,7 @@ iter_per_epoch = len(data_loader)
 data_iter = iter(data_loader)
 
 for i, (img, image_name) in tqdm(enumerate(data_loader)):
-    img_ = Variable(img[:,:,:600, :600]).cuda()
+    img_ = Variable(img_).cuda()
         # ===================forward=====================
     output = ae(img_.float())
         # ===================backward====================
