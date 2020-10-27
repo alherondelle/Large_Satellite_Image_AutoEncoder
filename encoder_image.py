@@ -60,13 +60,13 @@ class Autoencoder(nn.Module):
     def __init__(self):
         super(Autoencoder, self).__init__()
         ## encoder layers ##
-        self.conv1 = nn.Conv2d(2, 16, 3, padding=1)  
+        # conv layer (depth from 1 --> 16), 3x3 kernels
+        self.conv1 = nn.Conv2d(2, 16, 3, padding = 1)  
         # conv layer (depth from 16 --> 4), 3x3 kernels
         self.conv2 = nn.Conv2d(16, 8, 3, padding=1)
         self.conv3 = nn.Conv2d(8, 4, 3, padding=1)
         # pooling layer to reduce x-y dims by two; kernel and stride of 2
         self.pool = nn.MaxPool2d(2, 2)
-
 
     def forward(self, x):
         ## encode ##
@@ -101,7 +101,7 @@ iter_per_epoch = len(data_loader)
 data_iter = iter(data_loader)
 
 for i, (img, image_name) in tqdm(enumerate(data_loader)):
-    img_ = Variable(img[:,:,:600, :600]).cuda()
+    img_ = Variable(img[:,:,:608, :608]).cuda()
         # ===================forward=====================
     output = ae(img_.float())
         # ===================backward====================
