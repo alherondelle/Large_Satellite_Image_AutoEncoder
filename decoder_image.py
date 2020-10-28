@@ -89,7 +89,7 @@ iter_per_epoch = len(data_loader)
 data_iter = iter(data_loader)
 
 for i, (img, image_name) in tqdm(enumerate(data_loader)):
-    img_ = Variable(img_).cuda()
+    img_ = Variable(img).cuda()
         # ===================forward=====================
     output = ae(img_.float())
         # ===================backward====================
