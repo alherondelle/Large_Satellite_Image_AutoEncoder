@@ -45,8 +45,7 @@ class METEOSATDataset(Dataset):
         img_ = self.data[index]
         image = np.load(os.path.join(self.path,img_))
         image = torch.from_numpy(image.astype(np.float64))
-	    print(torch.max(image), 'is max')
-	    print(torch.min(image), 'is min')
+
         return image, img_
 
 
@@ -103,6 +102,8 @@ iter_per_epoch = len(data_loader)
 data_iter = iter(data_loader)
 
 for i, (img, image_name) in tqdm(enumerate(data_loader)):
+    print(torch.max(img), 'is max')
+    print(torch.min(img, 'is min'))
     img_ = Variable(img[:,:,:608, :608]).cuda()
         # ===================forward=====================
     output = ae(img_.float())
