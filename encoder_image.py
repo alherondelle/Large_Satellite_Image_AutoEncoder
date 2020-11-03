@@ -103,7 +103,7 @@ data_iter = iter(data_loader)
 
 for i, (img, image_name) in tqdm(enumerate(data_loader)):
     print(torch.max(img), 'is max')
-    print(torch.min(img, 'is min'))
+    print(torch.min(img), 'is min')
     img_ = Variable(img[:,:,:608, :608]).cuda()
         # ===================forward=====================
     output = ae(img_.float())
