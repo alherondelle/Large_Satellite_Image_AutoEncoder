@@ -45,8 +45,8 @@ class METEOSATDataset(Dataset):
         img_ = self.data[index]
         image = np.load(os.path.join(self.path,img_))
         image = torch.from_numpy(image.astype(np.float64))
-	print(torch.max(image), 'is max')
-	print(torch.min(image), 'is min')
+	    print(torch.max(image), 'is max')
+	    print(torch.min(image), 'is min')
         return image, img_
 
 
