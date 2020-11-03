@@ -25,6 +25,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--start_epoch', default=0, type=float, help='starting epoch')
 parser.add_argument('--train_img', default='../SatellitePredictionGAN/data/METEOSAT/train', type=str, help ='Path to training dataset')
+parser.add_argument('--batch_size', default=1, type = int, help='Dataloader batch size')
 opt = parser.parse_args()
 
 # Image difference data loader
@@ -52,7 +53,7 @@ class METEOSATDataset(Dataset):
 
 # Data loader 
 data_loader = torch.utils.data.DataLoader(dataset=METEOSATDataset(opt.train_img),
-                                            batch_size=1,
+                                            batch_size=opt.batch_size,
                                             shuffle=True, num_workers=0)
 
 # Model architecture 
