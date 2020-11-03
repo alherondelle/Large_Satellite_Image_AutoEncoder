@@ -106,7 +106,7 @@ min2 = 0
 count =0
 for i, (img, image_name) in tqdm(enumerate(data_loader)):
     img_ = Variable(img[:,:,:608, :608]).cuda()
-    count+=0
+    count+=1
     if torch.max(img_[:,0]) > max1:
         max1 = torch.max(img_[:,0])
     if torch.max(img_[:,1]) > max2:
