@@ -115,12 +115,12 @@ for i, (img, image_name) in tqdm(enumerate(data_loader)):
     if torch.min(img_[:,1]) < min2:
         min2 = torch.min(img_[:,1])
         # ===================forward=====================
-    output = ae(img_.float())
+    #output = ae(img_.float())
         # ===================backward====================
-    pic = np.array(output[0].cpu().detach())
+    #pic = np.array(output[0].cpu().detach())
     # ===================log========================
-    image_name = str(image_name[0][:-4])
-    month_info = image_name.split('/')[0]
+    #image_name = str(image_name[0][:-4])
+    #month_info = image_name.split('/')[0]
     #if not os.path.exists('./image_model_encoding_test/'+month_info):
     #    os.mkdir('./image_model_encoding_test/'+month_info)
     #np.save('./image_model_encoding_test/'+image_name+'.npy', pic)
