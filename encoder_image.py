@@ -43,7 +43,7 @@ class METEOSATDataset(Dataset):
 
     def __getitem__(self, index):
         img_ = self.data[index]
-        image = np.load(os.path.join(self.path,img_))
+        image = np.load(os.path.join(self.path,img_)) - 0.2158
         image = torch.from_numpy(image.astype(np.float64))
 
         return image, img_
