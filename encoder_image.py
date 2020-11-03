@@ -101,9 +101,20 @@ ae.eval()
 iter_per_epoch = len(data_loader)
 data_iter = iter(data_loader)
 
+max1 = 0
+min1 = 0
+max2 = 0
+min2 = 0
 for i, (img, image_name) in tqdm(enumerate(data_loader)):
-    print(torch.max(img), 'is max')
-    print(torch.min(img), 'is min')
+    if torch.max(img[:,0]) > max1:
+        max1 = torch.max(img[:,0])
+    if torch.max(img[:,1]) > max2:
+        max2 = torch.max(img[:,1])
+
+    if torch.min(img[:,0]) < min1:
+        min1 = torch.min(img[:,0])
+    if torch.min(img[:,1]) < min2:
+        min2 = torch.min(img[:,1])
     img_ = Variable(img[:,:,:608, :608]).cuda()
         # ===================forward=====================
     output = ae(img_.float())
@@ -116,4 +127,7 @@ for i, (img, image_name) in tqdm(enumerate(data_loader)):
     #    os.mkdir('./image_model_encoding_test/'+month_info)
     #np.save('./image_model_encoding_test/'+image_name+'.npy', pic)
 
-
+print(max1, 'is max 1')
+print(min1, 'is min 1')
+print(max2, 'is max 2')
+print(min2, 'is min 2')
