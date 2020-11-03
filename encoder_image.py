@@ -104,16 +104,16 @@ min1 = 0
 max2 = 0
 min2 = 0
 for i, (img, image_name) in tqdm(enumerate(data_loader)):
-    if torch.max(img[:,0]) > max1:
-        max1 = torch.max(img[:,0])
-    if torch.max(img[:,1]) > max2:
-        max2 = torch.max(img[:,1])
-
-    if torch.min(img[:,0]) < min1:
-        min1 = torch.min(img[:,0])
-    if torch.min(img[:,1]) < min2:
-        min2 = torch.min(img[:,1])
     img_ = Variable(img[:,:,:608, :608]).cuda()
+    if torch.max(img_[:,0]) > max1:
+        max1 = torch.max(img_[:,0])
+    if torch.max(img_[:,1]) > max2:
+        max2 = torch.max(img_[:,1])
+
+    if torch.min(img_[:,0]) < min1:
+        min1 = torch.min(img_[:,0])
+    if torch.min(img_[:,1]) < min2:
+        min2 = torch.min(img_[:,1])
         # ===================forward=====================
     output = ae(img_.float())
         # ===================backward====================
