@@ -45,6 +45,8 @@ class METEOSATDataset(Dataset):
         img_ = self.data[index]
         image = np.load(os.path.join(self.path,img_))
         image = torch.from_numpy(image.astype(np.float64))
+	print(torch.max(image), 'is max')
+	print(torch.min(image), 'is min')
         return image, img_
 
 
@@ -105,13 +107,12 @@ for i, (img, image_name) in tqdm(enumerate(data_loader)):
         # ===================forward=====================
     output = ae(img_.float())
         # ===================backward====================
-    print('stop')
     pic = np.array(output[0].cpu().detach())
     # ===================log========================
     image_name = str(image_name[0][:-4])
     month_info = image_name.split('/')[0]
-    if not os.path.exists('./image_model_encoding_test/'+month_info):
-        os.mkdir('./image_model_encoding_test/'+month_info)
-    np.save('./image_model_encoding_test/'+image_name+'.npy', pic)
+    #if not os.path.exists('./image_model_encoding_test/'+month_info):
+    #    os.mkdir('./image_model_encoding_test/'+month_info)
+    #np.save('./image_model_encoding_test/'+image_name+'.npy', pic)
 
 
