@@ -62,8 +62,8 @@ class METEOSATDataset(Dataset):
         image = np.moveaxis(image, 2, 0)
         print(np.max(image[0]), 'max1')
         print(np.max(image[1]), 'max2')
-        print(np.max(image[0]), 'min1')
-        print(np.max(image[1]), 'min2')
+        print(np.min(image[0]), 'min1')
+        print(np.min(image[1]), 'min2')
         image = torch.from_numpy(image.astype(np.float64))
         
         # Projection PCA 
