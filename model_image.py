@@ -110,7 +110,7 @@ class Autoencoder(nn.Module):
 ae = Autoencoder().cuda()
 if opt.start_epoch != 0:
   ae.load_state_dict(torch.load("./conv_autoencoder_model_v2_%d.pth" % (opt.start_epoch)))
-criterion = nn.MSELoss()
+criterion = nn.MSELoss().cuda()
 optimizer = torch.optim.Adam(ae.parameters(), lr=opt.learning_rate, weight_decay=1e-5)
 
 # Dataset info for metrics computing 
@@ -125,7 +125,7 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
     for i, img in tqdm(enumerate(data_loader)):
       img_ = Variable(img[:,:,:608, :608]).cuda()
         # ===================forward=====================
-      output = ae(img_.float())
+      output = ae(img_.float()).cuda()
       print(output.shape)
       loss = criterion(output, img_.float())
         # ===================backward====================
