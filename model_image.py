@@ -55,19 +55,14 @@ class METEOSATDataset(Dataset):
         img_ = self.data[index]
         image = np.load(os.path.join(self.path,img_))
         x,y,c = image.shape
+        # [0,1] range
         image = image/1024
         image = image.reshape(x*y,c)
+        # PCA projection
         image = pca_tf.transform(image)
         image = image.reshape(x, y, 2)
         image = np.moveaxis(image, 2, 0)
-        print(np.max(image[0]), 'max1')
-        print(np.max(image[1]), 'max2')
-        print(np.min(image[0]), 'min1')
-        print(np.min(image[1]), 'min2')
         image = torch.from_numpy(image.astype(np.float64))
-        
-        # Projection PCA 
-        # Normalisation [-1, 1]
         return image
 
 
@@ -147,12 +142,12 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
     # ===================log========================
     print('epoch [{}/{}], loss:{:.4f}, time:{:.4f}'
           .format(epoch+1, opt.end_epoch, loss.item()*100, time() - t0))
-    """if epoch % 10 == 0:
+    if epoch % 10 == 0:
         torch.save(ae.state_dict(), './conv_autoencoder_model_v2_{}.pth'.format(epoch))
         pic = output[0].cpu().detach()
         real_pic = img_[0].cpu().detach()
         save_image(pic, './image_model_v2_{}.png'.format(epoch))
-        save_image(real_pic, './image_real_model_v2_{}.png'.format(epoch))"""
+        save_image(real_pic, './image_real_model_v2_{}.png'.format(epoch))
 
 # Saving trained model : Final
 torch.save(ae.state_dict(), './conv_autoencoder_model_v2_{}.pth'.format(epoch))
