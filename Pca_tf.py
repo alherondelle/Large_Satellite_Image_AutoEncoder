@@ -23,7 +23,7 @@ from sklearn.decomposition import PCA
 pca_file = open('PCA_components.pkl','rb')
 pca_tf = pickle.load(pca_file)
 
-if not os.path.exists('../SatellitePredictionGAN/data/METEOSAT_PCAtf'):
+if not os.path.exists('METEOSAT_PCAtf'):
     os.mkdir('METEOSAT_PCAtf')
     os.mkdir('METEOSAT_PCAtf/train')
     os.mkdir('METEOSAT_PCAtf/test')
