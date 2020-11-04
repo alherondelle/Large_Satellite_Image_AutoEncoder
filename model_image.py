@@ -110,7 +110,7 @@ ae = Autoencoder().cuda()
 if opt.start_epoch != 0:
   ae.load_state_dict(torch.load("./conv_autoencoder_model_v2_%d.pth" % (opt.start_epoch)))
 criterion = nn.MSELoss()
-optimizer = torch.optim.Adam(ae.parameters(), lr=opt.learning_rate, weight_decay=1e-5, momentum=0)
+optimizer = torch.optim.Adam(ae.parameters(), lr=opt.learning_rate, weight_decay=1e-5)
 
 # Dataset info for metrics computing 
 
