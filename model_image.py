@@ -54,8 +54,6 @@ class METEOSATDataset(Dataset):
         image = image/1024
         # [-1, 1] range
         image = (image - 0.5)/0.5
-        print(np.max(image), 'max')
-        print(np.min(image), 'min')
         image = np.moveaxis(image, 2, 0)
         image = torch.from_numpy(image.astype(np.float64))
         return image
@@ -128,6 +126,7 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
       img_ = Variable(img[:,:,:608, :608]).cuda()
         # ===================forward=====================
       output = ae(img_.float())
+      print(output.shape)
       loss = criterion(output, img_.float())
         # ===================backward====================
       optimizer.zero_grad()
