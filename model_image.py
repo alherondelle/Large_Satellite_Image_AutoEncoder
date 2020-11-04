@@ -137,12 +137,12 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
     if epoch % 5 == 0:
       count = 0
       test_loss = 0
-      for i, img in tqdm(enumerate(data_loader)):
+      for i, img in tqdm(enumerate(test_loader)):
         count+= 1
         img_ = Variable(img[:,:,:608, :608]).cuda()
         output = ae(img_.float())
         test_loss += (img_.detach().cpu() - output.detach().cpu())**2
-        
+
       print('TEST LOSS : ', test_loss/count)
 
     if epoch % 10 == 0:
