@@ -110,7 +110,7 @@ ae = Autoencoder().cuda()
 if opt.start_epoch != 0:
   ae.load_state_dict(torch.load("./conv_autoencoder_model_v2_%d.pth" % (opt.start_epoch)))
 criterion = nn.MSELoss()
-optimizer = torch.optim.Adam(ae.parameters(), lr=opt.learning_rate, weight_decay=1e-5)
+optimizer = torch.optim.Adam(ae.parameters(), lr=opt.learning_rate, weight_decay=1e-5, momentum=0)
 
 # Dataset info for metrics computing 
 
@@ -143,7 +143,7 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
         output = ae(img_.float())
         test_loss += torch.mean((img_.detach().cpu() - output.detach().cpu())**2)
 
-      print('TEST LOSS : ', test_loss/count)
+      print('TEST LOSS : ', test_loss.item()/count)
 
     if epoch % 10 == 0:
         torch.save(ae.state_dict(), './conv_autoencoder_model_v2_{}.pth'.format(epoch))
