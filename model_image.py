@@ -62,7 +62,7 @@ class METEOSATDataset(Dataset):
         image = pca_tf.transform(image)
         image = image.reshape(x, y, 2)
         image = np.moveaxis(image, 2, 0)
-        image = torch.from_numpy(image.astype(np.float64))
+        image = torch.from_numpy(image[:, :608, :608].astype(np.float64))
         return image
 
 
@@ -130,7 +130,7 @@ data_iter = iter(data_loader)
 for epoch in range(opt.start_epoch, opt.end_epoch):
     t0 = time()
     for i, img in tqdm(enumerate(data_loader)):
-      img_ = Variable(img[:,:,:608, :608]).cuda()
+      img_ = Variable(img).cuda()
         # ===================forward=====================
       output = ae(img_.float())
       loss = criterion(output, img_.float())
