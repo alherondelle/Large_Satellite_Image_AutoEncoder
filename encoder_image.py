@@ -129,7 +129,3 @@ for i, (img, image_name) in tqdm(enumerate(data_loader)):
     #    os.mkdir('./image_model_encoding_test/'+month_info)
     #np.save('./image_model_encoding_test/'+image_name+'.npy', pic)
 
-print(max1, 'is max 1')
-print(min1, 'is min 1')
-print(max2, 'is max 2')
-print(min2, 'is min 2')
