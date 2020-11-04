@@ -30,6 +30,7 @@ parser.add_argument('--learning_rate', default=1e-3, type=float, help='learning 
 parser.add_argument('--start_epoch', default=0, type=float, help='starting epoch')
 parser.add_argument('--end_epoch', default=150, type=float, help='ending epoch')
 parser.add_argument('--train_img', default='./METEOSAT_PCAtf/train', type=str, help ='Path to training dataset')
+parser.add_argument('--test_img', default='./METEOSAT_PCAtf/test', type=str, help='Path to the testing dataset')
 opt = parser.parse_args()
 
 # Image difference data loader
@@ -58,6 +59,9 @@ class METEOSATDataset(Dataset):
 # Data loader 
 data_loader = torch.utils.data.DataLoader(dataset=METEOSATDataset(opt.train_img),
                                             batch_size=opt.batch_size,
+                                            shuffle=True, num_workers=0)
+test_loader = torch.utils.data.DataLoader(dataset=METEOSATDataset(opt.test_img),
+                                            batch_size=1,
                                             shuffle=True, num_workers=0)
 
 # Model architecture 
@@ -130,6 +134,17 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
     # ===================log========================
     print('epoch [{}/{}], loss:{:.4f}, time:{:.4f}'
           .format(epoch+1, opt.end_epoch, loss.item()*100, time() - t0))
+    if epoch % 5 == 0:
+      count = 0
+      test_loss = 0
+      for i, img in tqdm(enumerate(data_loader)):
+        count+= 1
+        img_ = Variable(img[:,:,:608, :608]).cuda()
+        output = ae(img_.float())
+        test_loss += (img_.detach().cpu() - output.detach().cpu())**2
+        
+      print('TEST LOSS : ', test_loss/count)
+
     if epoch % 10 == 0:
         torch.save(ae.state_dict(), './conv_autoencoder_model_v2_{}.pth'.format(epoch))
         pic = output[0].cpu().detach()
