@@ -37,7 +37,7 @@ for folder_ in os.listdir('../SatellitePredictionGAN/data/METEOSAT'):
                 img = img.reshape(x*y, 3)
                 img = pca_tf.transform(img).astype(np.float64)
                 img = img.reshape(x, y, 2)
-                mg = np.moveaxis(img, 2, 0)
+                img = np.moveaxis(img, 2, 0)
                 if not os.path.exists(os.path.join('METEOSAT_PCAtf', folder_, folder_2)):
                     os.mkdir(os.path.join('METEOSAT_PCAtf', folder_, folder_2,))
                 np.save(os.path.join('METEOSAT_PCAtf', folder_, folder_2, file_), img)

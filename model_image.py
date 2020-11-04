@@ -49,6 +49,7 @@ class METEOSATDataset(Dataset):
     def __getitem__(self, index):
         img_ = self.data[index]
         image = np.load(os.path.join(self.path,img_))
+        image = np.moveaxis(image, 2, 0)
         image = torch.from_numpy(image)
         print(image.shape)
         return image
