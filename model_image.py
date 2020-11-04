@@ -125,7 +125,7 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
     for i, img in tqdm(enumerate(data_loader)):
       img_ = Variable(img[:,:,:608, :608]).cuda()
         # ===================forward=====================
-      output = ae(img_.float()).cuda()
+      output = ae(img_.float())
       print(output.shape)
       loss = criterion(output, img_.float())
         # ===================backward====================
