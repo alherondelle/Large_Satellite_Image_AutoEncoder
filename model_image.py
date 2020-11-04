@@ -20,11 +20,6 @@ from torchvision.utils import save_image
 import torch.nn.functional as F
 import multiprocessing
 import argparse
-from sklearn.decomposition import PCA
-
-#PCA import
-pca_file = open('PCA_components.pkl','rb')
-pca_tf = pickle.load(pca_file)
 
 # Argument parser 
 
@@ -57,10 +52,10 @@ class METEOSATDataset(Dataset):
         x,y,c = image.shape
         # [0,1] range
         image = image/1024
-        image = image.reshape(x*y,c)
-        # PCA projection
-        image = pca_tf.transform(image)
-        image = image.reshape(x, y, 2)
+        # [-1, 1] range
+        image = (image - 0.5)/0.5
+        print(np.max(image), 'max')
+        print(np.min(image), 'min')
         image = np.moveaxis(image, 2, 0)
         image = torch.from_numpy(image.astype(np.float64))
         return image
@@ -79,17 +74,17 @@ class Autoencoder(nn.Module):
         super(Autoencoder, self).__init__()
         ## encoder layers ##
         # conv layer (depth from 1 --> 16), 3x3 kernels
-        self.conv1 = nn.Conv2d(2, 16, 3, padding = 1)  
+        self.conv1 = nn.Conv2d(3, 24, 3, padding = 1)  
         # conv layer (depth from 16 --> 4), 3x3 kernels
-        self.conv2 = nn.Conv2d(16, 8, 3, padding=1)
-        self.conv3 = nn.Conv2d(8, 4, 3, padding=1)
+        self.conv2 = nn.Conv2d(24, 12, 3, padding=1)
+        self.conv3 = nn.Conv2d(12, 3, 3, padding=1)
         # pooling layer to reduce x-y dims by two; kernel and stride of 2
         self.pool = nn.MaxPool2d(2, 2)
         ## decoder layers ##
         ## a kernel of 2 and a stride of 2 will increase the spatial dims by 2
-        self.t_conv1 = nn.ConvTranspose2d(4, 8, 2, stride=2)
-        self.t_conv2 = nn.ConvTranspose2d(8, 16, 2, stride=2)
-        self.t_conv3 = nn.ConvTranspose2d(16, 2, 2, stride=2)
+        self.t_conv1 = nn.ConvTranspose2d(3, 12, 2, stride=2)
+        self.t_conv2 = nn.ConvTranspose2d(12, 24, 2, stride=2)
+        self.t_conv3 = nn.ConvTranspose2d(24, 3, 2, stride=2)
 
 
     def forward(self, x):
