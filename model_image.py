@@ -20,6 +20,11 @@ from torchvision.utils import save_image
 import torch.nn.functional as F
 import multiprocessing
 import argparse
+from sklearn.decomposition import PCA
+
+#PCA import
+pca_file = open('PCA_components.pkl','rb')
+pca_tf = pickle.load(pca_file)
 
 # Argument parser 
 
@@ -49,10 +54,18 @@ class METEOSATDataset(Dataset):
     def __getitem__(self, index):
         img_ = self.data[index]
         image = np.load(os.path.join(self.path,img_))
+        x,y,c = image.shape
+        image = image/1024
+        image = image.reshape(x*y,c)
+        image = pca_tf.transform(image)
+        image = image.reshape(x, y, 2)
+        image = np.moveaxis(image, 2, 0)
+        print(np.max(image[0]), 'max1')
+        print(np.max(image[1]), 'max2')
+        print(np.max(image[0]), 'min1')
+        print(np.max(image[1]), 'min2')
         image = torch.from_numpy(image.astype(np.float64))
-        print(image.shape)
-        print(torch.max(image[0]), 'max')
-        print(torch.min(image[1]), 'min')
+        
         # Projection PCA 
         # Normalisation [-1, 1]
         return image
