@@ -51,7 +51,6 @@ class METEOSATDataset(Dataset):
         image = np.load(os.path.join(self.path,img_))
         image = np.moveaxis(image, 2, 0)
         image = torch.from_numpy(image)
-        print(image.shape)
         return image
 
 
@@ -120,8 +119,6 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
     t0 = time()
     for i, img in tqdm(enumerate(data_loader)):
       img_ = Variable(img[:,:,:608, :608]).cuda()
-      print(torch.max(img_), 'is max')
-      print(torch.min(img_), 'is min')
         # ===================forward=====================
       output = ae(img_.float())
       loss = criterion(output, img_.float())
