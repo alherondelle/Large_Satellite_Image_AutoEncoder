@@ -29,7 +29,7 @@ parser.add_argument('--batch_size', default=64, type=int, help='batch size')
 parser.add_argument('--learning_rate', default=1e-3, type=float, help='learning rate')
 parser.add_argument('--start_epoch', default=0, type=float, help='starting epoch')
 parser.add_argument('--end_epoch', default=150, type=float, help='ending epoch')
-parser.add_argument('--train_img', default='../SatellitePredictionGAN/data/METEOSAT/train', type=str, help ='Path to training dataset')
+parser.add_argument('--train_img', default='./METEOSAT_PCAtf/train', type=str, help ='Path to training dataset')
 opt = parser.parse_args()
 
 # Image difference data loader
@@ -49,13 +49,7 @@ class METEOSATDataset(Dataset):
     def __getitem__(self, index):
         img_ = self.data[index]
         image = np.load(os.path.join(self.path,img_))
-        x,y,c = image.shape
-        # [0,1] range
-        image = image/1024
-        # [-1, 1] range
-        image = (image - 0.5)/0.5
-        image = np.moveaxis(image, 2, 0)
-        image = torch.from_numpy(image.astype(np.float64))
+        image = torch.from_numpy(image)
         return image
 
 
@@ -124,9 +118,10 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
     t0 = time()
     for i, img in tqdm(enumerate(data_loader)):
       img_ = Variable(img[:,:,:608, :608]).cuda()
+      print(torch.max(img_), 'is max')
+      print(torch.min(img_), 'is min')
         # ===================forward=====================
       output = ae(img_.float())
-      print(output.shape)
       loss = criterion(output, img_.float())
         # ===================backward====================
       optimizer.zero_grad()
