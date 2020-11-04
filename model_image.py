@@ -141,7 +141,7 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
         count+= 1
         img_ = Variable(img[:,:,:608, :608]).cuda()
         output = ae(img_.float())
-        test_loss += (img_.detach().cpu() - output.detach().cpu())**2
+        test_loss += torch.mean((img_.detach().cpu() - output.detach().cpu())**2)
 
       print('TEST LOSS : ', test_loss/count)
 
