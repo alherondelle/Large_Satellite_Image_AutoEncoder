@@ -72,17 +72,17 @@ class Autoencoder(nn.Module):
         super(Autoencoder, self).__init__()
         ## encoder layers ##
         # conv layer (depth from 1 --> 16), 3x3 kernels
-        self.conv1 = nn.Conv2d(3, 24, 3, padding = 1)  
+        self.conv1 = nn.Conv2d(2, 16, 3, padding = 1)  
         # conv layer (depth from 16 --> 4), 3x3 kernels
-        self.conv2 = nn.Conv2d(24, 12, 3, padding=1)
-        self.conv3 = nn.Conv2d(12, 3, 3, padding=1)
+        self.conv2 = nn.Conv2d(16, 8, 3, padding=1)
+        self.conv3 = nn.Conv2d(8, 4, 3, padding=1)
         # pooling layer to reduce x-y dims by two; kernel and stride of 2
         self.pool = nn.MaxPool2d(2, 2)
         ## decoder layers ##
         ## a kernel of 2 and a stride of 2 will increase the spatial dims by 2
-        self.t_conv1 = nn.ConvTranspose2d(3, 12, 2, stride=2)
-        self.t_conv2 = nn.ConvTranspose2d(12, 24, 2, stride=2)
-        self.t_conv3 = nn.ConvTranspose2d(24, 3, 2, stride=2)
+        self.t_conv1 = nn.ConvTranspose2d(4, 8, 2, stride=2)
+        self.t_conv2 = nn.ConvTranspose2d(8, 16, 2, stride=2)
+        self.t_conv3 = nn.ConvTranspose2d(16, 2, 2, stride=2)
 
 
     def forward(self, x):
@@ -110,7 +110,7 @@ class Autoencoder(nn.Module):
 ae = Autoencoder().cuda()
 if opt.start_epoch != 0:
   ae.load_state_dict(torch.load("./conv_autoencoder_model_v2_%d.pth" % (opt.start_epoch)))
-criterion = nn.MSELoss().cuda()
+criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(ae.parameters(), lr=opt.learning_rate, weight_decay=1e-5)
 
 # Dataset info for metrics computing 
