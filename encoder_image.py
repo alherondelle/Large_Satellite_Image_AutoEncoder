@@ -24,7 +24,7 @@ import argparse
 # Training parameters 
 parser = argparse.ArgumentParser()
 parser.add_argument('--start_epoch', default=0, type=float, help='starting epoch')
-parser.add_argument('--train_img', default='../SatellitePredictionGAN/data/METEOSAT/train', type=str, help ='Path to training dataset')
+parser.add_argument('--train_img', default='./METEOSAT_PCAtf/train', type=str, help ='Path to training dataset')
 parser.add_argument('--batch_size', default=1, type = int, help='Dataloader batch size')
 opt = parser.parse_args()
 
@@ -99,33 +99,16 @@ ae.eval()
 iter_per_epoch = len(data_loader)
 data_iter = iter(data_loader)
 
-max1 = 0
-min1 = 0
-max2 = 0
-min2 = 0
-count =0
 for i, (img, image_name) in tqdm(enumerate(data_loader)):
     img_ = Variable(img[:,:,:608, :608]).cuda()
-    count+=1
-    if torch.max(img_[:,0]) > max1:
-        max1 = torch.max(img_[:,0])
-    if torch.max(img_[:,1]) > max2:
-        max2 = torch.max(img_[:,1])
-
-    if torch.min(img_[:,0]) < min1:
-        min1 = torch.min(img_[:,0])
-    if torch.min(img_[:,1]) < min2:
-        min2 = torch.min(img_[:,1])
-    if count == 10:
-        break
         # ===================forward=====================
-    #output = ae(img_.float())
+    output = ae(img_.float())
         # ===================backward====================
-    #pic = np.array(output[0].cpu().detach())
+    pic = np.array(output[0].cpu().detach())
     # ===================log========================
-    #image_name = str(image_name[0][:-4])
-    #month_info = image_name.split('/')[0]
-    #if not os.path.exists('./image_model_encoding_test/'+month_info):
-    #    os.mkdir('./image_model_encoding_test/'+month_info)
-    #np.save('./image_model_encoding_test/'+image_name+'.npy', pic)
+    image_name = str(image_name[0][:-4])
+    month_info = image_name.split('/')[0]
+    if not os.path.exists('./image_model_encoding_test/'+month_info):
+        os.mkdir('./image_model_encoding_test/'+month_info)
+    np.save('./image_model_encoding_test/'+image_name+'.npy', pic)
 
