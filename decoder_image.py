@@ -23,7 +23,7 @@ import argparse
 
 # Training parameters 
 parser = argparse.ArgumentParser()
-parser.add_argument('--start_epoch', default=0, type=float, help='starting epoch')
+parser.add_argument('--start_epoch', default=149, type=float, help='starting epoch')
 parser.add_argument('--train_img', default='../SatellitePredictionGAN/saved_vectors/METEOSAT/test', type=str, help ='Path to training dataset')
 opt = parser.parse_args()
 
