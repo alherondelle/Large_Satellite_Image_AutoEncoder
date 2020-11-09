@@ -98,8 +98,9 @@ for i, (img, image_name) in tqdm(enumerate(data_loader)):
     print('stop')
     pic = np.array(output[0].cpu().detach())
     # ===================log========================
-    image_name = str(image_name[0][:-4])
+    #image_name = str(image_name[0][:-4])
+    print(image_name)
     month_info = image_name.split('/')[0]
-    if not os.path.exists('./image_model_decoding_test/'+month_info):
-        os.mkdir('./image_model_decoding_test/'+month_info)
-    np.save('./image_model_decoding_test/'+image_name+'.npy', pic)
+    """if not os.path.exists('./image_model_decoding_test/'+month_info):
+        os.mkdir('./image_model_decoding_test/'+month_info)"""
+    np.save('./image_model_decoding_test/'+image_name, pic)
