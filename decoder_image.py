@@ -99,7 +99,7 @@ for i, (img, image_name) in tqdm(enumerate(data_loader)):
     pic = np.array(output[0].cpu().detach())
     # ===================log========================
     #image_name = str(image_name[0][:-4])
-    print(str(image_name))
+    print(str(image_name[0])[:-3])
     #month_info = image_name.split('/')[0]
     """if not os.path.exists('./image_model_decoding_test/'+month_info):
         os.mkdir('./image_model_decoding_test/'+month_info)"""
