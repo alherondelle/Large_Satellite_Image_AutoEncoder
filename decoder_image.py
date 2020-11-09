@@ -103,4 +103,4 @@ for i, (img, image_name) in tqdm(enumerate(data_loader)):
     #month_info = image_name.split('/')[0]
     """if not os.path.exists('./image_model_decoding_test/'+month_info):
         os.mkdir('./image_model_decoding_test/'+month_info)"""
-    np.save('./image_model_decoding_test/'+str(image_name), pic)
+    np.save('./image_model_decoding_test/'+str(image_name[0]), pic)
