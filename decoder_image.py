@@ -24,7 +24,7 @@ import argparse
 # Training parameters 
 parser = argparse.ArgumentParser()
 parser.add_argument('--start_epoch', default=0, type=float, help='starting epoch')
-parser.add_argument('--train_img', default='../SatellitePredictionGAN/data/METEOSAT_vector/train', type=str, help ='Path to training dataset')
+parser.add_argument('--train_img', default='../SatellitePredictionGAN/saved_vectors/METEOSAT/test', type=str, help ='Path to training dataset')
 opt = parser.parse_args()
 
 # Image difference data loader
@@ -43,8 +43,7 @@ class METEOSATDataset(Dataset):
 
     def __getitem__(self, index):
         img_ = self.data[index]
-        image = np.load(os.path.join(self.path,img_))
-        image = torch.from_numpy(image.astype(np.float64))
+        image = torch.load(os.path.join(self.path,img_))
         return image, img_
 
 
