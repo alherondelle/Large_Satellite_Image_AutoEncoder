@@ -32,10 +32,12 @@ class METEOSATDataset(Dataset):
 
     def __init__(self, path_):
         self.data=[]
-        for folder in os.listdir(path_):
+        for file_ in os.listdir(path_):
+            self.data.append(file_)
+        """for folder in os.listdir(path_):
           list_of_file = os.listdir(os.path.join(path_, folder))
           for files_ in list_of_file:
-              self.data.append(os.path.join(folder,files_))
+              self.data.append(os.path.join(folder,files_))"""
         self.path = path_
 
     def __len__(self):
