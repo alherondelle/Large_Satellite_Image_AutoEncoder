@@ -18,15 +18,17 @@ from torchvision.utils import save_image
 import torch.nn.functional as F
 import multiprocessing
 import argparse
-
+from sklearn.decomposition import PCA 
+import scipy.misc
 # Argument parser 
-
+pca_file = open('PCA_components.pkl', 'rb')
+PCA_tf = pickle.load(pca_file)
 # Training parameters 
 parser = argparse.ArgumentParser()
 parser.add_argument('--start_epoch', default=149, type=float, help='starting epoch')
-parser.add_argument('--train_img', default='../SatellitePredictionGAN/saved_vectors/METEOSAT/test', type=str, help ='Path to training dataset')
+#parser.add_argument('--train_img', default='../SatellitePredictionGAN/saved_vectors/METEOSAT/test', type=str, help ='Path to training dataset')
 opt = parser.parse_args()
-
+"""
 # Image difference data loader
 class METEOSATDataset(Dataset):
 
@@ -34,10 +36,10 @@ class METEOSATDataset(Dataset):
         self.data=[]
         for file_ in os.listdir(path_):
             self.data.append(file_)
-        """for folder in os.listdir(path_):
+        for folder in os.listdir(path_):
           list_of_file = os.listdir(os.path.join(path_, folder))
           for files_ in list_of_file:
-              self.data.append(os.path.join(folder,files_))"""
+              self.data.append(os.path.join(folder,files_))
         self.path = path_
 
     def __len__(self):
@@ -57,7 +59,7 @@ data_loader = torch.utils.data.DataLoader(dataset=METEOSATDataset(opt.train_img)
                                             shuffle=True, num_workers=0)
 
 # Model architecture 
-
+"""
 class Autoencoder(nn.Module):
     def __init__(self):
         super(Autoencoder, self).__init__()
@@ -90,17 +92,19 @@ ae.eval()
 iter_per_epoch = len(data_loader)
 data_iter = iter(data_loader)
 
-for i, (img, image_name) in tqdm(enumerate(data_loader)):
-    img_ = Variable(img).cuda()
+for file in os.listdir('test_GAN'):
+    img = torch.load(os.path.join('test_GAN', file))
+    for i in [4, 9]:
+    	output = img[4].unsqueeze(0)
+    	output = Variable(output).cuda()
         # ===================forward=====================
-    output = ae(img_.float())
-        # ===================backward====================
-    print('stop')
-    pic = np.array(output[0].cpu().detach())
-    # ===================log========================
-    #image_name = str(image_name[0][:-4])
-    print(str(image_name[0])[:-3])
-    #month_info = image_name.split('/')[0]
-    """if not os.path.exists('./image_model_decoding_test/'+month_info):
-        os.mkdir('./image_model_decoding_test/'+month_info)"""
-    np.save('./image_model_decoding_test/'+str(image_name[0])[:-3], pic)
+    	output = ae(output.float()).cpu().detach().squeeze(0)
+    	output = np.movexis(np.array(output), 0, -1)
+    	x, y, c = output.shape
+    	output = output.reshape(x*y, 2)
+    	output = PCA_tf.inverse_transform(output)
+        output = output.reshape(x,y,3)
+	if i==4:
+            type = 'true'
+        else : type = 'false'
+        scipy.misc.imsave(os.path.join('test_GAN_decode', file[:-3]+type+'.png'), output)
